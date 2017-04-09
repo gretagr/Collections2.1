@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Collections</string>
+    <string name="action1">Select</string>
+    <string name="action2">Select all</string>
+    <string name="action3">Sort by</string>
+    <string name="srch">search</string>
+    <string name="add_new">Item</string>
+    <string name="add_col">Collection</string>
+</resources>

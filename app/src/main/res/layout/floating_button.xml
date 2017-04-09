@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Main screen of the app -->
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/floating_bc"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom|end"
+    tools:showIn="@layout/activity_collections"
+    tools:context=".ui.main.CollectionsActivity">
+    <LinearLayout
+        android:id="@+id/collection"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_gravity="bottom|end"
+        >
+
+        <TextView
+            android:text="@string/add_col"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/create_col"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="8dp"
+
+            android:textColor="@color/grey"
+            />
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_marginBottom="85dp"
+            android:layout_marginEnd="25dp"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_create_new_folder_white_24dp"
+            android:id="@+id/floatingActionButtonCol" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addNew"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|end"
+        >
+        <TextView
+            android:text="@string/add_new"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/create_item"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/grey"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="mini"
+            app:backgroundTint="@color/colorPrimary"
+            android:layout_marginBottom="140dp"
+            android:layout_marginEnd="30dp"
+            app:srcCompat="@drawable/ic_mode_edit_white_24dp"
+            android:id="@+id/floatingActionButtonItem" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/add"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|end"
+        >
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="normal"
+            app:backgroundTint="@color/colorAccent"
+            app:srcCompat="@drawable/ic_add_white_24dp"
+            android:id="@+id/floatingActionButton"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            />
+
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.collections.com.grigelionytegmail.greta.mycollections.MainActivity" >
+
+    <item android:id="@+id/action_select"
+        android:title="@string/action1"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+
+        />
+    <item android:id="@+id/action_select_all"
+        android:title="@string/action2"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+
+        />
+    <item android:id="@+id/action_sort"
+        android:title="@string/action3"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+
+        />
+</menu>
+
+

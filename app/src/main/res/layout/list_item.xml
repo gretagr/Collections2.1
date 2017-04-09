@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cont_item_root"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:padding="3dp"
+    android:background="@drawable/background_state_drawable"
+    android:clickable="true"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/im_item_icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="6dp"
+        android:src="@drawable/img" />
+
+    <TextView
+        android:id="@+id/lbl_item_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="48dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        android:maxLines="1"
+        android:text="Sois comme l'eau mon ami"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:layout_toStartOf="@+id/im_item_icon_secondary" />
+
+    <TextView
+        android:id="@+id/lbl_item_sub_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lbl_item_text"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="48dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        android:singleLine="true"
+        android:text="Mononc' J"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/im_item_icon_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:clickable="true"
+        android:padding="6dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/ic_delete_black_18dp"
+        android:background="@drawable/background_state_drawable"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+    <ImageView
+        android:id="@+id/im_item_icon_secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:clickable="true"
+        android:padding="6dp"
+        android:src="@drawable/ic_favorite_border_black_18dp"
+        android:background="@drawable/background_state_drawable"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/im_item_icon_edit"/>
+    <ImageView
+        android:id="@+id/im_item_icon_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:clickable="true"
+        android:padding="6dp"
+        android:src="@drawable/ic_mode_edit_black_18dp"
+        android:background="@drawable/background_state_drawable"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/im_item_icon_delete" />
+
+</RelativeLayout>
