@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.adapters.CardAdapter;
 import com.collections2.grigelionyte.greta.collections.model.CardData;
+import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewCollection;
 import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
 
@@ -35,13 +36,15 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
     private RecyclerView recView;
     private CardAdapter adapter;
     private ArrayList cardData;
-
+    MyDBHandler db;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
+
+        db = new MyDBHandler(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

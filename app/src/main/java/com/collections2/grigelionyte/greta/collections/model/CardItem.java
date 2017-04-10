@@ -10,7 +10,7 @@ public class CardItem {
         return subTitle;
     }
 
-    public void setSubTitle(String subTitle) {
+    protected void setSubTitle(String subTitle) {
         this.subTitle = subTitle;
     }
 
@@ -29,7 +29,6 @@ public class CardItem {
     public void setTitle(String title) {
         this.title = title;
     }
-
     public int getImageResId() {
         return imageResId;
     }
