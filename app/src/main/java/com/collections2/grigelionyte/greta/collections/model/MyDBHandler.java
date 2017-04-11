@@ -86,21 +86,12 @@ public class MyDBHandler extends SQLiteOpenHelper{
         db.close();
     }
 
-//    public void deleteCollection(String name) {
-//        SQLiteDatabase db = getWritableDatabase();
-//        db.execSQL("DELETE FROM " + " WHERE " + COLUMN_NAME + "=\"" + name + "\";");
-//        db.close();
-//
-//    }
-//    public int updateCollection(Collection collection){
-//        SQLiteDatabase db = getWritableDatabase();
-//        ContentValues colValues = new ContentValues();
-//        colValues.put(COLUMN_NAME, collection.getName());
-//        colValues.put(COLUMN_DESCRIPTION, collection.getDescription());
-//        colValues.put(COLUMN_URI, String.valueOf(collection.getImage()));
-//        colValues.put(COLUMN_CATEGORIES, collection.getCategories());
-//
-//        return db.update(TABLE_COLLECTIONS, colValues, COLUMN_ID + "=?", new String[] {String.valueOf(collection.getID)});
-//    }
+    public void deleteCollection(String name) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE * FROM " + " WHERE " + COLUMN_NAME + "=\"" + name + "\";");
+        db.close();
+
+    }
+
 
 }

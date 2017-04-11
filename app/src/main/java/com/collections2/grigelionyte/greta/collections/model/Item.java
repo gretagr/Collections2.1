@@ -22,10 +22,11 @@ public class Item {
     }
 
     public void setName(String name) {
+
         this.name = name;
     }
 
-    protected String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -33,7 +34,7 @@ public class Item {
         this.description = description;
     }
 
-    protected String getCategories() {
+    public String getCategories() {
         return categories;
     }
 
@@ -41,7 +42,7 @@ public class Item {
         this.categories = categories;
     }
 
-    protected Uri getImage() {
+    public Uri getImage() {
         return image;
     }
 
