@@ -4,17 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.adapters.ListItemAdapter;
-import com.collections2.grigelionyte.greta.collections.model.ListItem;
-import com.collections2.grigelionyte.greta.collections.model.ListItemData;
+import com.collections2.grigelionyte.greta.collections.model.Item;
+import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
+import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
 
 import java.util.ArrayList;
 
@@ -27,18 +30,25 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private ListItemAdapter adapter;
     private ArrayList listData;
     private Toolbar toolbar;
+    FloatingActionButton additem;
+
+    MyDBHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        db = new MyDBHandler(getApplicationContext());
+        String getT = getIntent().getStringExtra("name_of_collection");
+        int colId = db.getId(getT);
 
-        listData = (ArrayList) ListItemData.getListData();
+        listData = (ArrayList) db.getAllItemsFromCollection(colId);
+
 
         recyclerView = (RecyclerView) findViewById(R.id.rec_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new ListItemAdapter(ListItemData.getListData(), this);
+        adapter = new ListItemAdapter(listData, this);
         recyclerView.setAdapter(adapter);
         adapter.setItemClickCallback(this);
 
@@ -46,11 +56,19 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         setSupportActionBar(toolbar);
 
         initCollapsingToolbar();
+        additem = (FloatingActionButton)findViewById(R.id.fb_add_btn);
+        additem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent in = new Intent(ListActivity.this, NewItem.class);
+                startActivity(in);
+            }
+        });
     }
 
     @Override
     public void onItemClick(int p) {
-        ListItem item = (ListItem) listData.get(p);
+        Item item = (Item) listData.get(p);
 
         Intent i = new Intent(this, DetailActivity.class);
 
@@ -64,13 +82,13 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
 
     @Override
     public void onSecondaryIconClick(int p) {
-        ListItem item = (ListItem) listData.get(p);
+        Item item = (Item) listData.get(p);
         //update our data
-        if (item.isFavourite()) {
-            item.setFavourite(false);
-        } else {
-            item.setFavourite(true);
-        }
+//        if (item.isFavourite()) {
+//            item.setFavourite(false);
+//        } else {
+//            item.setFavourite(true);
+//        }
         //pass new data to adapter and update
         adapter.setListData(listData);
         adapter.notifyDataSetChanged();
@@ -102,7 +120,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
+        appBarLayout.setExpanded(false);
 
         // hiding & showing the title when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {

@@ -1,5 +1,6 @@
 package com.collections2.grigelionyte.greta.collections.ui.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -19,7 +20,7 @@ import android.widget.LinearLayout;
 
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.adapters.CardAdapter;
-import com.collections2.grigelionyte.greta.collections.model.CardData;
+import com.collections2.grigelionyte.greta.collections.model.ItemsCollection;
 import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewCollection;
 import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
@@ -27,10 +28,6 @@ import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
 import java.util.ArrayList;
 
 public class CollectionsActivity extends AppCompatActivity implements CardAdapter.ItemClickCallback{
-    private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
-    private static final String EXTRA_QUOTE = "EXTRA_QUOTE";
-    private static final String EXTRA_ATTR = "EXTRA_ATTR";
-
 
     private Toolbar toolbar;
     private RecyclerView recView;
@@ -44,14 +41,14 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
 
-        db = new MyDBHandler(this);
+        db = new MyDBHandler(getApplicationContext());
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         initCollapsingToolbar();
         // SETTING CARD VIEW ----------------------------------------------------------------------------------------------------------------------
-        cardData = (ArrayList) CardData.getListData();
+        cardData = (ArrayList) db.getAllCollections();
 
         recView = (RecyclerView)findViewById(R.id.rec_list);
         recView.setItemAnimator(new DefaultItemAnimator());
@@ -164,7 +161,14 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
 
     @Override
     public void onItemClick(int p) {
-
+        ItemsCollection col = (ItemsCollection) cardData.get(p);
+//        Intent i = new Intent(this, ListActivity.class);
+//        Bundle extras = new Bundle();
+//        extras.putString("name_of_col_title", col.getColTitle());
+//        i.putExtra("extras_string_name", extras);
+//        startActivity(i);
+        Intent intent = makeIntent(CollectionsActivity.this, col.getColTitle());
+        startActivity(intent);
     }
 
     @Override
@@ -177,7 +181,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
+        appBarLayout.setExpanded(false);
 
         // hiding & showing the title when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -206,5 +210,10 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
       super.onResume();
         View bc = findViewById(R.id.floating_bc);
         bc.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+    }
+    public static Intent makeIntent(Context context, String nameofcol) {
+        Intent intent = new Intent(context, ListActivity.class);
+        intent.putExtra("name_of_collection", nameofcol);
+        return intent;
     }
 }

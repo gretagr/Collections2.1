@@ -6,4 +6,5 @@
     <string name="srch">search</string>
     <string name="add_new">Item</string>
     <string name="add_col">Collection</string>
+    <string name="select_col">Select Collection</string>
 </resources>

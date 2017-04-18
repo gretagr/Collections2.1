@@ -4,34 +4,44 @@ package com.collections2.grigelionyte.greta.collections.model;
 import android.net.Uri;
 
 public class Item {
-    private String name, description, categories;
-    private Uri image;
-
+    private String title, subTitle, categories, itemCatText;
+    private Uri imageResId;
+    private int colId;
     public Item(){
 
     }
-    public Item(String name, String description, String categories, Uri image){
-        this.name = name;
-        this.description = description;
+    public Item(String title, String subTitle,Uri imageResId, String categories, String itemCatText, int colId){
+        this.title = title;
+        this.subTitle = subTitle;
         this.categories = categories;
-        this.image = image;
+        this.itemCatText = itemCatText;
+        this.imageResId = imageResId;
+        this.colId = colId;
     }
 
-    public String getName() {
-        return name;
+    public int getColId() {
+        return colId;
     }
 
-    public void setName(String name) {
-
-        this.name = name;
+    public void setColId(int colId) {
+        this.colId = colId;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTitle() {
+        return title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTitle(String title) {
+
+        this.title = title;
+    }
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
     }
 
     public String getCategories() {
@@ -42,11 +52,19 @@ public class Item {
         this.categories = categories;
     }
 
-    public Uri getImage() {
-        return image;
+    public String getItemCat(){
+        return itemCatText;
+    }
+    public void setItemCatText(String itemCatText){
+        this.itemCatText = itemCatText;
     }
 
-    public void setImage(Uri image) {
-        this.image = image;
+    public Uri getImage() {
+        return imageResId;
     }
+
+    public void setImage(Uri imageResId) {
+        this.imageResId = imageResId;
+    }
+
 }

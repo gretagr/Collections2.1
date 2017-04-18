@@ -7,16 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.collections2.grigelionyte.greta.collections.R;
-import com.collections2.grigelionyte.greta.collections.model.ListItem;
+import com.collections2.grigelionyte.greta.collections.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListHolder>{
 
-    private List <ListItem> listData;
+    private List <Item> listData;
     private LayoutInflater inflater;
 
     private ItemClickCallback itemClickCallback;
@@ -30,7 +29,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         this.itemClickCallback = itemClickCallback;
     }
 
-    public ListItemAdapter(List <ListItem> listData, Context c){
+    public ListItemAdapter(List <Item> listData, Context c){
         inflater = LayoutInflater.from(c);
         this.listData = listData;
     }
@@ -43,14 +42,15 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
 
     @Override
     public void onBindViewHolder(ListHolder holder, int position) {
-        ListItem item = listData.get(position);
+        Item item = listData.get(position);
         holder.title.setText(item.getTitle());
         holder.subTitle.setText(item.getSubTitle());
-        if (item.isFavourite()){
-            holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_black_18dp);
-        } else {
-            holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_border_black_18dp);
-        }
+        holder.thumbnail.setImageURI(item.getImage());
+        //if (item.isFavourite()){
+        //    holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_black_18dp);
+        //} else {
+        //    holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_border_black_18dp);
+        //}
     }
 
     @Override
@@ -86,8 +86,22 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
             }
         }
     }
-    public void setListData(ArrayList<ListItem> exerciseList) {
+    public void setListData(ArrayList<Item> exerciseList) {
         this.listData.clear();
         this.listData.addAll(exerciseList);
+    }
+    public long getItemId(int position) {
+        return (getItems() != null && !getItems().isEmpty()) ? getItems().get(position).getColId() : position;
+    }
+
+    public Item getItem(int position) {
+        return (getItems() != null && !getItems().isEmpty()) ? getItems().get(position) : null ;
+    }
+    public void setItems(List<Item> listData) {
+        this.listData = listData;
+    }
+
+    public List<Item> getItems() {
+        return listData;
     }
 }

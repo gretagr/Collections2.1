@@ -52,12 +52,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
             >
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_height="60dp"
                 android:layout_width="60dp"
                 android:clickable="true"
                 android:layout_marginLeft="20dp"
                 android:src="@drawable/pink_add_photo"
+                android:onClick="launchCamera"
                 android:id="@+id/addImage"
                 />
             <EditText
@@ -69,48 +70,34 @@
                 android:textColor="@color/grey"
                 android:id="@+id/itemName"
                 android:layout_weight="0.72"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:layout_gravity="bottom"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="160dp"
-            >
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageButton"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
                 android:layout_marginLeft="20dp"
-                android:clickable="true"
-                android:src="@drawable/img"
-
-                />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:hint="Collection"
-                android:ems="1"
-                android:textColor="@color/grey"
-                android:id="@+id/collectionName"
-                android:layout_weight="1"
-                android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
                 android:layout_gravity="bottom"/>
+
         </LinearLayout>
+
         <LinearLayout
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="230dp"
+            android:layout_marginTop="150dp"
             >
+
+            <Spinner
+                android:id="@+id/spinner_collections"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:animateLayoutChanges="true"
+                android:prompt="@string/select_col"
+                android:spinnerMode="dropdown"
+                android:popupTheme="@style/AlertDialog.AppCompat.Light"
+                android:textColor="@color/grey">
+
+            </Spinner>
 
             <EditText
                 android:layout_width="match_parent"
@@ -121,7 +108,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginLeft="20dp"
                 android:ems="10"
-                android:id="@+id/editText2" />
+                android:id="@+id/itemDesc" />
 
             <TextView
                 android:text="CATEGORIES"
@@ -132,8 +119,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView3" />
-
-
+        <LinearLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linear"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical"
+            >
+</LinearLayout>
         </LinearLayout>
 
 

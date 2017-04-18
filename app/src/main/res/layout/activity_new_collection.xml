@@ -52,11 +52,12 @@
             android:orientation="horizontal"
             android:padding="16dp"
             >
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:clickable="true"
                 android:paddingRight="8dp"
+                android:onClick="launchCamera"
                 android:src="@drawable/pink_add_photo"
                 android:id="@+id/addColImg"
                 />
@@ -68,7 +69,7 @@
                 android:textColorHint="@color/light_grey"
                 android:ems="1"
                 android:textColor="@color/grey"
-                android:id="@+id/itemName"
+                android:id="@+id/colName"
                 android:layout_weight="1"
                 android:layout_gravity="bottom"/>
         </LinearLayout>
@@ -88,7 +89,7 @@
                 android:textColorHint="@color/light_grey"
                 android:textColor="@color/grey"
                 android:ems="10"
-                android:id="@+id/editText2" />
+                android:id="@+id/colDesc" />
             <TextView
                 android:text="CATEGORIES"
                 android:textSize="20sp"
