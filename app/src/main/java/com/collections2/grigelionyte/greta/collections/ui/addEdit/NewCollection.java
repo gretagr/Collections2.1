@@ -23,6 +23,7 @@ import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivi
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class NewCollection extends AppCompatActivity {
@@ -96,7 +97,8 @@ public class NewCollection extends AppCompatActivity {
     }
     public void launchCamera(View view) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test.jpg");
+        Calendar cal = Calendar.getInstance();
+        imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), (cal.getTimeInMillis() + ".jpg"));
         Uri tempUri = Uri.fromFile(imageFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
