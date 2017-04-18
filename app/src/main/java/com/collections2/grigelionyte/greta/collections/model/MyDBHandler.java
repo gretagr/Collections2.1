@@ -131,7 +131,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                Item item = new Item(cursor.getString(1), cursor.getString(2), Uri.parse(cursor.getString(3)), cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)) );
+                Item item = new Item(cursor.getString(1), cursor.getString(2), Uri.parse(cursor.getString(3)), cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)) );
                 items.add(item);
             } while (cursor.moveToNext());
         }
@@ -205,12 +205,44 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                Item item = new Item(cursor.getString(1), cursor.getString(2), Uri.parse(cursor.getString(3)), cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)) );
+                Item item = new Item(cursor.getString(1), cursor.getString(2), Uri.parse(cursor.getString(3)), cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)) );
                 items.add(item);
             } while (cursor.moveToNext());
         }
 
         return items;
     }
-
+    public int setFavoriteItem(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_ITEM_FAVORITE, 1);
+        return db.update(TABLE_ITEMS, contentValues, COLUMN_ITEM_NAME + " =? ", new String[] {name});
+    }
+    public int setNotFavorite(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_ITEM_FAVORITE, 0);
+        return db.update(TABLE_ITEMS, contentValues, COLUMN_ITEM_NAME + " =? ", new String[] {name});
+    }
+    public int getFavorite(String name){
+        SQLiteDatabase db = getWritableDatabase();
+        int res = 0;
+        String[] columns = {COLUMN_NAME, COLUMN_ITEM_FAVORITE};
+        Cursor cursor = db.query(TABLE_ITEMS, columns, COLUMN_NAME + " = '"+ name + "'", null, null, null, null );
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(COLUMN_ITEM_FAVORITE);
+            res = cursor.getInt(index);
+        }
+        return res;
+    }
+    public int updateItem(Item item){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+         contentValues.put(COLUMN_ITEM_NAME, item.getTitle());
+        contentValues.put(COLUMN_DESCRIPTION, item.getSubTitle());
+        contentValues.put(COLUMN_ITEM_URI, String.valueOf(item.getImage()));
+        contentValues.put(COLUMN_ITEM_CATEGORIES_TEXT, item.getItemCat());
+        contentValues.put(COLUMN_ITEM_COLLECTION_ID, item.getColId());
+        return db.update(TABLE_ITEMS, contentValues, COLUMN_ITEM_NAME + "=?", new String[] {item.getTitle()});
+    }
 }

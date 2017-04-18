@@ -162,11 +162,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
     @Override
     public void onItemClick(int p) {
         ItemsCollection col = (ItemsCollection) cardData.get(p);
-//        Intent i = new Intent(this, ListActivity.class);
-//        Bundle extras = new Bundle();
-//        extras.putString("name_of_col_title", col.getColTitle());
-//        i.putExtra("extras_string_name", extras);
-//        startActivity(i);
+
         Intent intent = makeIntent(CollectionsActivity.this, col.getColTitle());
         startActivity(intent);
     }

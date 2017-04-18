@@ -1,8 +1,8 @@
 package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,19 +25,13 @@ import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivity;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 public class NewItem extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     ImageView addImage;
-    String imageName = "items";
-    public static final int REQUEST_CODE = 2;
-    String dateAndTime = getCurrentDateAndTime();
-    File imageFile;
-    Uri uri;
+    public static final int REQUEST_TAKE_PHOTO = 1;
     Button cancel, save;
     Spinner spinner;
     EditText itemName, itemDesc;
@@ -46,6 +40,11 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     MyDBHandler db;
     List<EditText> allEditText = new ArrayList<EditText>();
     String categories, catResult;
+    static Uri capturedImageUri = null;
+    private File getImageFile;
+    File imageFile;
+
+
 
 
     @Override
@@ -83,6 +82,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Uri tempUri = Uri.fromFile(imageFile);
                 int size = allEditText.size();
                 String[] strings = new String[size];
                 for (int j = 0; j < size; j++) {
@@ -96,7 +96,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                 } else if (itemDesc.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Item item = new Item(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), uri.fromFile(imageFile), categories, catResult, db.getId(text));
+                    Item item = new Item(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), tempUri, categories, catResult, db.getId(text));
                     db.addItem(item);
                     Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
                     Intent home = new Intent(NewItem.this, CollectionsActivity.class);
@@ -108,31 +108,36 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
 
         populateColNames();
 
-    }
 
-    private String getCurrentDateAndTime() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-        String formattedDate = df.format(c.getTime());
-        return formattedDate;
     }
-
     public void launchCamera(View view) {
-        Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName + dateAndTime + ".jpg");
-        uri.fromFile(imageFile);
-        camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-        startActivityForResult(camera, REQUEST_CODE);
-    }
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test.jpg");
+        Uri tempUri = Uri.fromFile(imageFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        startActivityForResult(intent, 0);
 
+    }
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap photo = (Bitmap) extras.get("data");
-            addImage.setImageBitmap(photo);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode==0){
+            switch (resultCode){
+                case Activity.RESULT_OK:
+                    if(imageFile.exists())
+                    {
+                        //Bitmap photo = (Bitmap) data.getExtras().get("data");
+                        //addImage.setImageBitmap(photo);
+                    }
+                    else{
+                        Toast.makeText(this, "image file was not created", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case Activity.RESULT_CANCELED:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

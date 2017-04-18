@@ -64,7 +64,9 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
                 startActivity(in);
             }
         });
+
     }
+
 
     @Override
     public void onItemClick(int p) {
@@ -83,16 +85,19 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     @Override
     public void onSecondaryIconClick(int p) {
         Item item = (Item) listData.get(p);
-        //update our data
-//        if (item.isFavourite()) {
-//            item.setFavourite(false);
-//        } else {
-//            item.setFavourite(true);
-//        }
-        //pass new data to adapter and update
-        adapter.setListData(listData);
+        String name = item.getTitle();
+        if (item.getFavorite() == 1) {
+           item.setFavorite(0);
+            db.setNotFavorite(name);
+
+        } else  {
+            item.setFavorite(1);
+            db.setFavoriteItem(name);
+
+       }
         adapter.notifyDataSetChanged();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -120,7 +125,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(false);
+        appBarLayout.setExpanded(true);
 
         // hiding & showing the title when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -144,4 +149,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
             }
         });
     }
+
+
+
 }

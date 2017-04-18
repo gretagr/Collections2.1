@@ -1,7 +1,7 @@
 package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,15 +22,12 @@ import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivity;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-
 
 
 public class NewCollection extends AppCompatActivity {
 
-    public static final int REQUEST_CODE = 1;
+    public static final int REQUEST_TAKE_PHOTO = 1;
     Button cancel, save, addCategoyBtn;
     EditText addCategoryField, itemName, itemDesc;
     ListView categoriesListview;
@@ -38,11 +35,13 @@ public class NewCollection extends AppCompatActivity {
     ArrayAdapter<String> categoriesadapter;
     ImageView addImage;
     String imageName = "collections";
-    String dateAndTime = getCurrentDateAndTime();
     File imageFile;
     Uri uri;
     MyDBHandler db;
     String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
+    static Uri capturedImageUri;
+    String mCurrentPhotoPath;
+    private File getImageFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,25 +74,56 @@ public class NewCollection extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
          @Override
               public void onClick(View v) {
+             Uri tempUri = Uri.fromFile(imageFile);
                    if (itemName.getText().toString().isEmpty()) {
                        Toast.makeText(getApplicationContext(), "Collection not created. You must enter the name.", Toast.LENGTH_SHORT).show();
                    } else if (itemDesc.getText().toString().isEmpty()) {
                        Toast.makeText(getApplicationContext(), "Collection not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                    }
                    else {
-                       ItemsCollection collection = new ItemsCollection(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), uri.fromFile(imageFile), categoriesList.toString());
+                       ItemsCollection collection = new ItemsCollection(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), tempUri, categoriesList.toString());
                        db.addCollection(collection);
                        Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
+                       Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
+                       startActivity(home);
                     }
                 }
                 });
 
-
                 addCat();
                 deleteCat();
+
+    }
+    public void launchCamera(View view) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test.jpg");
+        Uri tempUri = Uri.fromFile(imageFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        startActivityForResult(intent, 1);
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode==1){
+            switch (resultCode){
+                case Activity.RESULT_OK:
+                    if(imageFile.exists())
+                    {
+                        //Bitmap photo = (Bitmap) data.getExtras().get("data");
+                        //addImage.setImageBitmap(photo);
+                    }
+                    else{
+                        Toast.makeText(this, "image file was not created", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case Activity.RESULT_CANCELED:
+                    break;
+                default:
+                    break;
             }
-
-
+        }
+    }
             public void addCat() {
                 addCategoyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -121,29 +151,5 @@ public class NewCollection extends AppCompatActivity {
                         });
             }
 
-            private String getCurrentDateAndTime() {
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-                String formattedDate = df.format(c.getTime());
-                return formattedDate;
-            }
 
-            public void launchCamera(View view) {
-                Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName + dateAndTime + ".jpg");
-                uri.fromFile(imageFile);
-                camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                startActivityForResult(camera, REQUEST_CODE);
-            }
-
-            @Override
-            protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-                //super.onActivityResult(requestCode, resultCode, data);
-                if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-                    Bundle extras = data.getExtras();
-                    Bitmap photo = (Bitmap) extras.get("data");
-                    addImage.setImageBitmap(photo);
-                }
-            }
         }

@@ -6,18 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="normal"
-        app:backgroundTint="@color/colorAccent"
-        app:srcCompat="@drawable/ic_add_white_24dp"
-        android:id="@+id/fb_add_btn"
-        app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|start"
-        android:layout_marginLeft="16dp"
-        />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -89,5 +78,16 @@
     <include layout="@layout/list_layout"
         android:id="@+id/include" />
 
-
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:backgroundTint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_add_white_24dp"
+        android:id="@+id/fb_add_btn"
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|center"
+        android:layout_marginLeft="16dp"
+        />
 </android.support.design.widget.CoordinatorLayout>
