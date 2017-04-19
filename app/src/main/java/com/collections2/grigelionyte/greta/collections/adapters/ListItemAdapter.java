@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.model.Item;
+import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,8 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
     private List <Item> listData;
     private LayoutInflater inflater;
     private ItemClickCallback itemClickCallback;
-    Context c;
+    MyDBHandler db;
+
 
 
     public interface ItemClickCallback {
@@ -37,7 +39,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
     public ListItemAdapter(List <Item> listData, Context c){
         inflater = LayoutInflater.from(c);
         this.listData = listData;
-        this.c = c;
+        this.db = new MyDBHandler(c);
     }
 
     @Override
@@ -54,12 +56,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         byte[] image = item.getImage();
         Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
         holder.thumbnail.setImageBitmap(bitmap);
-        holder.setItemLongClickListener(new ItemLongClickListener() {
-            @Override
-            public void onItemLongClick(View view, int pos) {
 
-            }
-        });
         if (item.getFavorite() == 1) {
             holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_black_18dp);
         }
@@ -67,20 +64,24 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_border_black_18dp);
         }
     }
-
+    public void remove(int position) {
+        listData.remove(position);
+        Item item = listData.get(position);
+        db.deleteItem(item);
+        notifyItemRemoved(position);
+    }
     @Override
     public int getItemCount() {
         return listData.size();
     }
 
-    class ListHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
+    class ListHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView thumbnail;
         ImageView secondaryIcon;
         TextView title;
         TextView subTitle;
         View container;
-        ItemLongClickListener itemLongClickListener;
 
         public ListHolder(View itemView) {
             super(itemView);
@@ -91,7 +92,6 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
             title = (TextView)itemView.findViewById(R.id.lbl_item_text);
             container = (View)itemView.findViewById(R.id.cont_item_root);
             container.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -103,15 +103,6 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
             }
         }
 
-       public void setItemLongClickListener(ItemLongClickListener l){
-           this.itemLongClickListener = l;
-       }
-
-        @Override
-        public boolean onLongClick(View view) {
-            this.itemLongClickListener.onItemLongClick(view, getLayoutPosition());
-            return false;
-        }
     }
     public void setListData(ArrayList<Item> exerciseList) {
         this.listData.clear();

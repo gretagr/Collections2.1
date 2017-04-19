@@ -102,10 +102,9 @@ public class MyDBHandler extends SQLiteOpenHelper{
         db.close();
 
     }
-    public void deleteItem(Item item) {
+    public int deleteItem(Item item) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_ITEMS, COLUMN_ITEM_NAME, new String[]{String.valueOf(item.getTitle())} );
-        db.close();
+        return  db.delete(TABLE_ITEMS, COLUMN_ITEM_NAME  + "=?", new String[]{String.valueOf(item.getTitle())} );
 
     }
     public  List<ItemsCollection> getAllCollections(){

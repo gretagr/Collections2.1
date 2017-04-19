@@ -9,12 +9,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.adapters.ListItemAdapter;
+import com.collections2.grigelionyte.greta.collections.adapters.ListTouchHelper;
 import com.collections2.grigelionyte.greta.collections.model.Item;
 import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
@@ -31,6 +34,8 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private ArrayList listData;
     private Toolbar toolbar;
     FloatingActionButton additem;
+
+
 
     MyDBHandler db;
 
@@ -56,7 +61,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         setSupportActionBar(toolbar);
 
         initCollapsingToolbar();
-        additem = (FloatingActionButton)findViewById(R.id.fb_add_btn);
+        additem = (FloatingActionButton) findViewById(R.id.fb_add_btn);
         additem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,8 +69,19 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
                 startActivity(in);
             }
         });
-
+        ItemTouchHelper.Callback callback = new ListTouchHelper(adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recyclerView);
+        recyclerView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getApplicationContext(), "longcklick", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
     }
+
+
 
 
     @Override

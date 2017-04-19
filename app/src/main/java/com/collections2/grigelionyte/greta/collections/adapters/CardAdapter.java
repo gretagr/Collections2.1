@@ -71,6 +71,11 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
         return cardData.size();
     }
 
+    public void remove(int position) {
+
+        notifyItemRemoved(position);
+    }
+
     class CardHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView image;
         TextView title;
