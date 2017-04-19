@@ -1,19 +1,18 @@
 package com.collections2.grigelionyte.greta.collections.model;
 
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 
 public class ItemsCollection extends AppCompatActivity {
 
     private String title, subTitle, categories;
-    private Uri imageResId;
+    private byte[] imageResId;
     private int cardId;
     private boolean favorite = false;
 
     public ItemsCollection(){
 
     }
-    public ItemsCollection(String title, String subTitle, Uri imageResId, String categories){
+    public ItemsCollection(String title, String subTitle, byte[] imageResId, String categories){
         this.title = title;
         this.subTitle = subTitle;
         this.imageResId = imageResId;
@@ -43,11 +42,11 @@ public class ItemsCollection extends AppCompatActivity {
         this.subTitle = subTitle;
     }
 
-    public Uri getColImage() {
+    public byte[] getColImage() {
         return this.imageResId;
     }
 
-    public void setColImage(Uri imageResId) {
+    public void setColImage(byte[] imageResId) {
         this.imageResId = imageResId;
     }
 

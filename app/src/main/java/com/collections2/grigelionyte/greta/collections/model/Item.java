@@ -1,11 +1,9 @@
 package com.collections2.grigelionyte.greta.collections.model;
 
 
-import android.net.Uri;
-
 public class Item {
     private String title, subTitle, categories, itemCatText;
-    private Uri imageResId;
+    private byte[] imageResId;
     private int imgEdit;
     private int imgDelete;
     private int colId;
@@ -13,7 +11,7 @@ public class Item {
     public Item(){
 
     }
-    public Item(String title, String subTitle,Uri imageResId, String categories, String itemCatText, int colId, int favorite){
+    public Item(String title, String subTitle,byte[] imageResId, String categories, String itemCatText, int colId, int favorite){
         this.title = title;
         this.subTitle = subTitle;
         this.categories = categories;
@@ -22,7 +20,7 @@ public class Item {
         this.colId = colId;
         this.favorite = favorite;
     }
-    public Item(String title, String subTitle, Uri imageResId, String categories, String itemCatText, int colId){
+    public Item(String title, String subTitle, byte[] imageResId, String categories, String itemCatText, int colId){
         this.title = title;
         this.subTitle = subTitle;
         this.categories = categories;
@@ -73,11 +71,11 @@ public class Item {
         this.itemCatText = itemCatText;
     }
 
-    public Uri getImage() {
+    public byte[] getImage() {
         return imageResId;
     }
 
-    public void setImage(Uri imageResId) {
+    public void setImage(byte[] imageResId) {
         this.imageResId = imageResId;
     }
 

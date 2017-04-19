@@ -1,7 +1,8 @@
 package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,7 +22,10 @@ import com.collections2.grigelionyte.greta.collections.model.ItemsCollection;
 import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -32,17 +36,16 @@ public class NewCollection extends AppCompatActivity {
     Button cancel, save, addCategoyBtn;
     EditText addCategoryField, itemName, itemDesc;
     ListView categoriesListview;
-    ArrayList<String> categoriesList;
+    ArrayList<String> categoriesList = null;
     ArrayAdapter<String> categoriesadapter;
     ImageView addImage;
     String imageName = "collections";
     File imageFile;
     Uri uri;
     MyDBHandler db;
-    String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
-    static Uri capturedImageUri;
-    String mCurrentPhotoPath;
-    private File getImageFile;
+    String result = null;
+    String catList = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,18 +78,25 @@ public class NewCollection extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
          @Override
               public void onClick(View v) {
-             Uri tempUri = Uri.fromFile(imageFile);
+                 catList = categoriesList.toString();
+                    if (categoriesList.toString() == "[]") {
+                        catList = null;
+                    }
+                    else{
+                        catList = categoriesList.toString();
+                    }
                    if (itemName.getText().toString().isEmpty()) {
                        Toast.makeText(getApplicationContext(), "Collection not created. You must enter the name.", Toast.LENGTH_SHORT).show();
                    } else if (itemDesc.getText().toString().isEmpty()) {
                        Toast.makeText(getApplicationContext(), "Collection not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                    }
                    else {
-                       ItemsCollection collection = new ItemsCollection(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), tempUri, categoriesList.toString());
+                       ItemsCollection collection = new ItemsCollection(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), imageViewToByte(addImage), catList);
                        db.addCollection(collection);
                        Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
                        Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
                        startActivity(home);
+                       Toast.makeText(getApplicationContext(), "cat = " + catList, Toast.LENGTH_LONG).show();
                     }
                 }
                 });
@@ -95,42 +105,41 @@ public class NewCollection extends AppCompatActivity {
                 deleteCat();
 
     }
-    public void launchCamera(View view) {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    private String getCurrentDateAndTime() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        String formattedDate = df.format(c.getTime());
+        return formattedDate;
+    }
+
+    public void launchCamera(View view) throws IOException {
+        Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Calendar cal = Calendar.getInstance();
         imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), (cal.getTimeInMillis() + ".jpg"));
-        Uri tempUri = Uri.fromFile(imageFile);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-        startActivityForResult(intent, 1);
-
+        uri.fromFile(imageFile);
+        camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        startActivityForResult(camera, REQUEST_TAKE_PHOTO);
     }
+
+
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode==1){
-            switch (resultCode){
-                case Activity.RESULT_OK:
-                    if(imageFile.exists())
-                    {
-                        //Bitmap photo = (Bitmap) data.getExtras().get("data");
-                        //addImage.setImageBitmap(photo);
-                    }
-                    else{
-                        Toast.makeText(this, "image file was not created", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                case Activity.RESULT_CANCELED:
-                    break;
-                default:
-                    break;
-            }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap photo = (Bitmap) extras.get("data");
+            addImage.setImageBitmap(photo);
         }
     }
             public void addCat() {
                 addCategoyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String result = addCategoryField.getText().toString();
+                        if(!addCategoryField.getText().equals("")) {
+                            result = addCategoryField.getText().toString();
+                        }
                         categoriesList.add(result);
                         categoriesadapter.notifyDataSetChanged();
                         addCategoryField.setText("");
@@ -139,6 +148,13 @@ public class NewCollection extends AppCompatActivity {
 
                 });
             }
+    private byte[] imageViewToByte(ImageView image) {
+        Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
+    }
 
             private void deleteCat() {
                 categoriesListview.setOnItemLongClickListener(

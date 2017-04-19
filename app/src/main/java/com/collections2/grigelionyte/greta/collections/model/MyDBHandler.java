@@ -6,7 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
                 + COLUMN_ID + " integer primary key autoincrement,"
                 + COLUMN_NAME + " text not null,"
                 + COLUMN_DESCRIPTION +" text not null,"
-                + COLUMN_URI +" text,"
+                + COLUMN_URI +" blob,"
                 + COLUMN_CATEGORIES +" text,"
                 + COLUMN_FAVORITE + " integer default 0" + ");");
 
@@ -76,7 +76,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         ContentValues valuesCollection = new ContentValues();
         valuesCollection.put(COLUMN_NAME, collection.getColTitle());
         valuesCollection.put(COLUMN_DESCRIPTION, collection.getSubTitle());
-        valuesCollection.put(COLUMN_URI, String.valueOf(collection.getColImage()));
+        valuesCollection.put(COLUMN_URI, collection.getColImage());
         valuesCollection.put(COLUMN_CATEGORIES, collection.getCategories());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_COLLECTIONS, null, valuesCollection);
@@ -87,7 +87,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         ContentValues valuesItem = new ContentValues();
         valuesItem.put(COLUMN_ITEM_NAME, item.getTitle());
         valuesItem.put(COLUMN_ITEM_DESCRIPTION, item.getSubTitle());
-        valuesItem.put(COLUMN_ITEM_URI, String.valueOf(item.getImage()));
+        valuesItem.put(COLUMN_ITEM_URI, item.getImage());
         valuesItem.put(COLUMN_ITEM_CATEGORIES, item.getCategories());
         valuesItem.put(COLUMN_ITEM_CATEGORIES_TEXT, item.getItemCat());
         valuesItem.put(COLUMN_ITEM_COLLECTION_ID, item.getColId());
@@ -116,7 +116,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                ItemsCollection collection = new ItemsCollection( cursor.getString(1), cursor.getString(2), Uri.parse(cursor.getString(3)), cursor.getString(4));
+                ItemsCollection collection = new ItemsCollection( cursor.getString(1), cursor.getString(2), cursor.getBlob(3), cursor.getString(4));
                 collections.add(collection);
             } while (cursor.moveToNext());
         }
@@ -131,7 +131,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                Item item = new Item(cursor.getString(1), cursor.getString(2), Uri.parse(cursor.getString(3)), cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)) );
+                Item item = new Item(cursor.getString(1), cursor.getString(2), cursor.getBlob(3), cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)) );
                 items.add(item);
             } while (cursor.moveToNext());
         }
@@ -205,7 +205,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                Item item = new Item(cursor.getString(1), cursor.getString(2), Uri.parse(cursor.getString(3)), cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)) );
+                Item item = new Item(cursor.getString(1), cursor.getString(2), cursor.getBlob(3), cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)) );
                 items.add(item);
             } while (cursor.moveToNext());
         }

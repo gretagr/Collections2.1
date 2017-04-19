@@ -1,6 +1,8 @@
 package com.collections2.grigelionyte.greta.collections.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +51,9 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         Item item = listData.get(position);
         holder.title.setText(item.getTitle());
         holder.subTitle.setText(item.getSubTitle());
-        holder.thumbnail.setImageURI(item.getImage());
+        byte[] image = item.getImage();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+        holder.thumbnail.setImageBitmap(bitmap);
         holder.setItemLongClickListener(new ItemLongClickListener() {
             @Override
             public void onItemLongClick(View view, int pos) {

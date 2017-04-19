@@ -1,9 +1,10 @@
 package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.collections2.grigelionyte.greta.collections.R;
@@ -24,7 +26,10 @@ import com.collections2.grigelionyte.greta.collections.model.Item;
 import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,10 +45,12 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     ArrayAdapter<String> spAdapter;
     MyDBHandler db;
     List<EditText> allEditText = new ArrayList<EditText>();
-    String categories, catResult;
-    static Uri capturedImageUri = null;
-    private File getImageFile;
+    String categories;
+    Uri uri;
     File imageFile;
+    TextView categoriesView;
+    LinearLayout linearLayout;
+    String catResult = null;
 
 
 
@@ -53,10 +60,11 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
 
-
+        linearLayout = (LinearLayout) findViewById(R.id.linear);
         itemDesc = (EditText) findViewById(R.id.itemDesc);
         itemName = (EditText) findViewById(R.id.itemName);
         spinner = (Spinner) findViewById(R.id.spinner_collections);
+        categoriesView = (TextView)findViewById(R.id.textView3);
         // colNme = spinner.getSelectedItem().toString();
 
         db = new MyDBHandler(getApplicationContext());
@@ -83,21 +91,29 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri tempUri = Uri.fromFile(imageFile);
-                int size = allEditText.size();
-                String[] strings = new String[size];
-                for (int j = 0; j < size; j++) {
-                    strings[j] = allEditText.get(j).getText().toString();
+                if(categories != null) {
+                    Uri tempUri = Uri.fromFile(imageFile);
+                    int size = allEditText.size();
+                    String[] strings = new String[size];
+                    for (int j = 0; j < size; j++) {
+                        strings[j] = allEditText.get(j).getText().toString();
+                    }
+                    catResult = Arrays.toString(strings);
+                    if(catResult.equals("[, ]")){
+                        catResult = null;
+                    }
                 }
-                catResult = Arrays.toString(strings);
-
+                else {
+                    catResult = null;
+                }
+                Toast.makeText(getApplicationContext(), "catresult = " + catResult, Toast.LENGTH_LONG).show();
                 String text = spinner.getSelectedItem().toString();
                 if (itemName.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the name.", Toast.LENGTH_SHORT).show();
                 } else if (itemDesc.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Item item = new Item(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), tempUri, categories, catResult, db.getId(text));
+                    Item item = new Item(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), imageViewToByte(addImage), categories, catResult, db.getId(text));
                     db.addItem(item);
                     Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
                     Intent home = new Intent(NewItem.this, CollectionsActivity.class);
@@ -111,36 +127,41 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
 
 
     }
-    public void launchCamera(View view) {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    private String getCurrentDateAndTime() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        String formattedDate = df.format(c.getTime());
+        return formattedDate;
+    }
+
+    public void launchCamera(View view) throws IOException {
+        Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Calendar cal = Calendar.getInstance();
         imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), (cal.getTimeInMillis() + ".jpg"));
-        Uri tempUri = Uri.fromFile(imageFile);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-        startActivityForResult(intent, 0);
-
+        uri.fromFile(imageFile);
+        camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        startActivityForResult(camera, REQUEST_TAKE_PHOTO);
     }
+
+
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode==0){
-            switch (resultCode){
-                case Activity.RESULT_OK:
-                    if(imageFile.exists())
-                    {
-                        //Bitmap photo = (Bitmap) data.getExtras().get("data");
-                        //addImage.setImageBitmap(photo);
-                    }
-                    else{
-                        Toast.makeText(this, "image file was not created", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                case Activity.RESULT_CANCELED:
-                    break;
-                default:
-                    break;
-            }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap photo = (Bitmap) extras.get("data");
+            addImage.setImageBitmap(photo);
         }
+    }
+
+    private byte[] imageViewToByte(ImageView image) {
+        Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
     }
 
     public void populateColNames() {
@@ -163,24 +184,30 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
 
         String text = spinner.getSelectedItem().toString();
         categories = db.getCategories(text);
-        List<String> categoriesList = new ArrayList<String>();
-        String str[] = categories.split(",");
-        str = correct(str);
-        categoriesList = java.util.Arrays.asList(str);
-
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linear);
-        linearLayout.removeAllViews();
-
-        for (int y = 0; y < categoriesList.size(); y++) {
-            EditText editText = new EditText(getApplicationContext());
-            allEditText.add(editText);
-            editText.setTextColor(Color.BLACK);
-            editText.setPadding(0, 30, 0, 30);
-            editText.setHintTextColor(Color.parseColor("#BCBCBC"));
-            editText.setHint(categoriesList.get(y));
-            linearLayout.addView(editText);
+        if (categories == null) {
+            categoriesView.setVisibility(View.INVISIBLE);
+            catResult = null;
+            linearLayout.removeAllViews();
         }
+        else if (categories != null) {
+            List<String> categoriesList = new ArrayList<String>();
+            String str[] = categories.split(",");
+            str = correct(str);
+            categoriesList = java.util.Arrays.asList(str);
 
+
+            linearLayout.removeAllViews();
+
+            for (int y = 0; y < categoriesList.size(); y++) {
+                EditText editText = new EditText(getApplicationContext());
+                allEditText.add(editText);
+                editText.setTextColor(Color.BLACK);
+                editText.setPadding(0, 30, 0, 30);
+                editText.setHintTextColor(Color.parseColor("#BCBCBC"));
+                editText.setHint(categoriesList.get(y));
+                linearLayout.addView(editText);
+            }
+        }
     }
 
 

@@ -1,6 +1,8 @@
 package com.collections2.grigelionyte.greta.collections.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +51,9 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
         ItemsCollection item = cardData.get(position);
         holder.title.setText(item.getColTitle());
         holder.subTitle.setText(item.getSubTitle());
-        holder.image.setImageURI(item.getColImage());
+        byte[] image = item.getColImage();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+        holder.image.setImageBitmap(bitmap);
         // if (item.isFavourite()){
         //     holder.favourite.setImageResource(R.drawable.ic_favorite_black_18dp);
         //  } else {
