@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Create Item screen -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <Button
+                android:text="Save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:height="60dp"
+                android:textSize="16sp"
+                android:id="@+id/save"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:background="@color/colorPrimary"
+                android:layout_gravity="bottom"
+                />
+
+            <Button
+                android:text="Cancel"
+                android:height="60dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cancel"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+
+                android:background="@color/colorPrimary"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_gravity="bottom"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            >
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_height="60dp"
+                android:layout_width="60dp"
+                android:clickable="true"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/pink_add_photo"
+                android:onClick="launchCamera"
+                android:id="@+id/addImage"
+                />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="Name"
+                android:ems="1"
+                android:textColor="@color/grey"
+                android:id="@+id/itemName"
+                android:layout_weight="0.72"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_gravity="bottom"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="150dp"
+            >
+
+            <Spinner
+                android:id="@+id/spinner_collections"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:animateLayoutChanges="true"
+                android:prompt="@string/select_col"
+                android:spinnerMode="dropdown"
+                android:popupTheme="@style/AlertDialog.AppCompat.Light"
+                android:textColor="@color/grey">
+
+            </Spinner>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="Description"
+                android:textColor="@color/grey"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:ems="10"
+                android:id="@+id/itemDesc" />
+
+            <TextView
+                android:text="CATEGORIES"
+                android:textSize="20sp"
+                android:layout_marginLeft="25dp"
+                android:textColor="@color/grey"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3" />
+            <LinearLayout
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linear"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical"
+                >
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</ScrollView>

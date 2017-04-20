@@ -29,6 +29,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
     public interface ItemClickCallback {
         void onItemClick(int p);
         void onSecondaryIconClick(int p);
+        void onEditClick(int p);
 
     }
 
@@ -56,6 +57,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         byte[] image = item.getImage();
         Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
         holder.thumbnail.setImageBitmap(bitmap);
+        holder.edit.setImageResource(R.drawable.ic_mode_edit_black_18dp);
 
         if (item.getFavorite() == 1) {
             holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_black_18dp);
@@ -79,6 +81,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
 
         ImageView thumbnail;
         ImageView secondaryIcon;
+        ImageView edit;
         TextView title;
         TextView subTitle;
         View container;
@@ -88,6 +91,8 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
             thumbnail = (ImageView)itemView.findViewById(R.id.im_item_icon);
             secondaryIcon = (ImageView)itemView.findViewById(R.id.im_item_icon_secondary);
             secondaryIcon.setOnClickListener(this);
+            edit = (ImageView)itemView.findViewById(R.id.im_item_icon_edit);
+            edit.setOnClickListener(this);
             subTitle = (TextView)itemView.findViewById(R.id.lbl_item_sub_title);
             title = (TextView)itemView.findViewById(R.id.lbl_item_text);
             container = (View)itemView.findViewById(R.id.cont_item_root);
@@ -96,17 +101,17 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.cont_item_root){
+            if (v.getId() == R.id.cont_item_root) {
                 itemClickCallback.onItemClick(getAdapterPosition());
-            } else {
+            }
+            else if (v.getId() == R.id.im_item_icon_edit){
+                    itemClickCallback.onEditClick(getAdapterPosition());
+                }
+             else if (v.getId() == R.id.im_item_icon_secondary){
                 itemClickCallback.onSecondaryIconClick(getAdapterPosition());
             }
         }
 
-    }
-    public void setListData(ArrayList<Item> exerciseList) {
-        this.listData.clear();
-        this.listData.addAll(exerciseList);
     }
 
 }

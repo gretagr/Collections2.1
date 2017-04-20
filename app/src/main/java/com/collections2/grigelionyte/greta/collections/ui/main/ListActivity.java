@@ -1,6 +1,8 @@
 package com.collections2.grigelionyte.greta.collections.ui.main;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -21,6 +23,7 @@ import com.collections2.grigelionyte.greta.collections.adapters.ListTouchHelper;
 import com.collections2.grigelionyte.greta.collections.model.Item;
 import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
+import com.collections2.grigelionyte.greta.collections.ui.addEdit.UpdateItem;
 
 import java.util.ArrayList;
 
@@ -28,6 +31,10 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
     private static final String EXTRA_QUOTE = "EXTRA_QUOTE";
     private static final String EXTRA_ATTR = "EXTRA_ATTR";
+    private static final String EXTRA_ARR = "EXTRA_ARR";
+    private static final String EXTRA_CAT1 = "EXTRA_CAT1";
+    private static final String EXTRA_CAT2 = "EXTRA_CAT2";
+    private static final String EXTRA_ID = "EXTRA_ID";
 
     private RecyclerView recyclerView;
     private ListItemAdapter adapter;
@@ -87,12 +94,17 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     @Override
     public void onItemClick(int p) {
         Item item = (Item) listData.get(p);
-
         Intent i = new Intent(this, DetailActivity.class);
-
+        String tempT = item.getTitle();
+        int id = db.getColIdInItems(tempT);
+        String collectionName = db.getColName(id);
         Bundle extras = new Bundle();
         extras.putString(EXTRA_QUOTE, item.getTitle());
         extras.putString(EXTRA_ATTR, item.getSubTitle());
+        extras.putByteArray(EXTRA_ARR, item.getImage());
+        extras.putString(EXTRA_CAT1, item.getCategories());
+        extras.putString(EXTRA_CAT2, item.getItemCat());
+        extras.putString(EXTRA_ID, collectionName);
         i.putExtra(BUNDLE_EXTRAS, extras);
 
         startActivity(i);
@@ -112,6 +124,22 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
 
        }
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onEditClick(int p) {
+        Item itemToTransfer = (Item) listData.get(p);
+        Intent intentEdit = new Intent(this, UpdateItem.class);
+
+        Bundle extras = new Bundle();
+        extras.putString(EXTRA_QUOTE, itemToTransfer.getTitle());
+        extras.putString(EXTRA_ATTR, itemToTransfer.getSubTitle());
+        extras.putByteArray(EXTRA_ARR, itemToTransfer.getImage());
+        extras.putString(EXTRA_CAT1, itemToTransfer.getCategories());
+        extras.putString(EXTRA_CAT2, itemToTransfer.getItemCat());
+        intentEdit.putExtra(BUNDLE_EXTRAS, extras);
+
+        startActivity(intentEdit);
     }
 
     @Override

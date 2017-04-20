@@ -3,13 +3,14 @@ package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,22 +36,35 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class NewItem extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     ImageView addImage;
     public static final int REQUEST_TAKE_PHOTO = 1;
     Button cancel, save;
-    Spinner spinner;
+    Spinner spinner1;
     EditText itemName, itemDesc;
     ArrayList<String> names = new ArrayList<String>();
-    ArrayAdapter<String> spAdapter;
+    ArrayAdapter<String> spAdapter1;
     MyDBHandler db;
     List<EditText> allEditText = new ArrayList<EditText>();
     String categories;
+    String categories2;
     Uri uri;
+    String desc;
+    String title;
+    String collName;
     File imageFile;
     TextView categoriesView;
     LinearLayout linearLayout;
     String catResult = null;
+    Bitmap image;
+
+    private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
+    private static final String EXTRA_QUOTE = "EXTRA_QUOTE";
+    private static final String EXTRA_ATTR = "EXTRA_ATTR";
+    private static final String EXTRA_ARR = "EXTRA_ARR";
+    private static final String EXTRA_CAT1 = "EXTRA_CAT1";
+    private static final String EXTRA_CAT2 = "EXTRA_CAT2";
+    private static final String EXTRA_ID = "EXTRA_ID";
 
 
 
@@ -59,39 +73,43 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
+        Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
+        db = new MyDBHandler(getApplicationContext());
+
+        byte[] img = extras.getByteArray(EXTRA_ARR);
+        image = BitmapFactory.decodeByteArray(img, 0, img.length);
+        desc = extras.getString(EXTRA_ATTR);
+        title = extras.getString(EXTRA_QUOTE);
+        categories = extras.getString(EXTRA_CAT1);
+        categories2 = extras.getString(EXTRA_CAT2);
+        collName = extras.getString(EXTRA_ID);
 
         linearLayout = (LinearLayout) findViewById(R.id.linear);
         itemDesc = (EditText) findViewById(R.id.itemDesc);
         itemName = (EditText) findViewById(R.id.itemName);
-        spinner = (Spinner) findViewById(R.id.spinner_collections);
+        spinner1 = (Spinner) findViewById(R.id.spinner_collections);
         categoriesView = (TextView)findViewById(R.id.textView3);
-        // colNme = spinner.getSelectedItem().toString();
 
-        db = new MyDBHandler(getApplicationContext());
-
-        spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, names);
+        spAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, names);
 
         save = (Button) findViewById(R.id.save);
-
         cancel = (Button) findViewById(R.id.cancel);
-
         addImage = (ImageView) findViewById(R.id.addImage);
-
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cancel = new Intent(NewItem.this, CollectionsActivity.class);
+                Intent cancel = new Intent(UpdateItem.this, CollectionsActivity.class);
                 startActivity(cancel);
             }
         });
-        spinner.setOnItemSelectedListener(this);
-
+        spinner1.setOnItemSelectedListener(this);
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(categories != null) {
+                    Uri tempUri = Uri.fromFile(imageFile);
                     int size = allEditText.size();
                     String[] strings = new String[size];
                     for (int j = 0; j < size; j++) {
@@ -106,7 +124,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                     catResult = null;
                 }
                 Toast.makeText(getApplicationContext(), "catresult = " + catResult, Toast.LENGTH_LONG).show();
-                String text = spinner.getSelectedItem().toString();
+                String text = spinner1.getSelectedItem().toString();
                 if (itemName.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the name.", Toast.LENGTH_SHORT).show();
                 } else if (itemDesc.getText().toString().isEmpty()) {
@@ -115,7 +133,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                     Item item = new Item(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), imageViewToByte(addImage), categories, catResult, db.getId(text));
                     db.addItem(item);
                     Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
-                    Intent home = new Intent(NewItem.this, CollectionsActivity.class);
+                    Intent home = new Intent(UpdateItem.this, CollectionsActivity.class);
                     startActivity(home);
                 }
 
@@ -123,8 +141,6 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         });
 
         populateColNames();
-
-
     }
 
     public void launchCamera(View view) throws IOException {
@@ -141,6 +157,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap photo = (Bitmap) extras.get("data");
@@ -163,7 +180,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
             String name = cursor.getString(1);
             names.add(name);
         }
-        spinner.setAdapter(spAdapter);
+        spinner1.setAdapter(spAdapter1);
     }
 
     @Override
@@ -174,7 +191,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-        String text = spinner.getSelectedItem().toString();
+        String text = spinner1.getSelectedItem().toString();
         categories = db.getCategories(text);
         if (categories == null) {
             categoriesView.setVisibility(View.INVISIBLE);
@@ -215,7 +232,3 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         return categoriesList;
     }
 }
-
-
-
-

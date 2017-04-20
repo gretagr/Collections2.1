@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:orientation="vertical"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
     tools:context="com.collections2.grigelionyte.greta.collections.ui.main.ListActivity">
-
+    <ImageView
+        android:id="@+id/im_detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="-10dp"
+        android:src="@drawable/androidimg"
+        />
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="300dp"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout2">
     <TextView
         android:id="@+id/lbl_quote_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:fontFamily="sans-serif-medium" />
-
+        android:layout_height="match_parent"
+        android:textSize="24dp"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+ />
     <TextView
         android:id="@+id/lbl_quote_attribution"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/lbl_quote_text"
         android:fontFamily="sans-serif-light"
-        android:textStyle="italic" />
-
+        android:textStyle="italic"
+        android:textSize="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" />
 </LinearLayout>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/myList"
+        android:layout_below="@+id/linearLayout2">
+
+    </ListView>
+</RelativeLayout>

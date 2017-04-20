@@ -143,33 +143,18 @@ public class MyDBHandler extends SQLiteOpenHelper{
         String[] columns={COLUMN_ID, COLUMN_NAME,COLUMN_DESCRIPTION,COLUMN_CATEGORIES, COLUMN_FAVORITE};
         return  db.query(TABLE_COLLECTIONS, columns, null, null, null, null, null);
     }
-
-  /*  private String[] myAllColumns = { MyDBHandler.COLUMN_ID,
-            MyDBHandler.COLUMN_NAME, MyDBHandler.COLUMN_DESCRIPTION,
-            MyDBHandler.COLUMN_URI,
-            MyDBHandler.COLUMN_CATEGORIES,
-            MyDBHandler.COLUMN_FAVORITE
-    };
-    protected ItemsCollection cursorToCollection (Cursor cursor){
-        ItemsCollection col = new ItemsCollection();
-        col.setTitle(cursor.getString(1));
-        col.setSubTitle(cursor.getString(2));
-        col.setColImage(Uri.parse(cursor.getString(3)));
-        col.setCategories(cursor.getString(4));
-        return col;
-    }
-    public ItemsCollection getColById(int id){
+    public int getColIdInItems(String name) {
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.query(MyDBHandler.TABLE_COLLECTIONS, myAllColumns,
-                MyDBHandler.COLUMN_ID + " = ?",
-                new String[] { String.valueOf(id) }, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
+        int id = 0;
+        String[] columns = {COLUMN_ITEM_COLLECTION_ID, COLUMN_NAME};
+        Cursor cursor = db.query(TABLE_ITEMS, columns, COLUMN_NAME + " = '" + name + "'", null, null, null, null);
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(COLUMN_ITEM_COLLECTION_ID);
 
-        ItemsCollection collection = cursorToCollection(cursor);
-        return collection;
-    }*/
+            id = cursor.getInt(index);
+        }
+        return id;
+    }
 
     public int getId(String name){
         SQLiteDatabase db = getWritableDatabase();
@@ -194,6 +179,18 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         return string;
     }
+    public String getColName(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        String nameOfCol = "";
+        String[] columns = {COLUMN_NAME, COLUMN_ID};
+        Cursor cursor = db.query(TABLE_COLLECTIONS, columns, COLUMN_NAME + " = '"+ id + "'", null, null, null, null );
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(COLUMN_ID);
+            nameOfCol = cursor.getString(index);
+        }
+        return nameOfCol;
+    }
+
     public  List<Item> getAllItemsFromCollection(int id){
         List<Item> items = new ArrayList<Item>();
         SQLiteDatabase db = this.getWritableDatabase();
