@@ -67,9 +67,9 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         }
     }
     public void remove(int position) {
-        listData.remove(position);
         Item item = listData.get(position);
         db.deleteItem(item);
+        listData.remove(position);
         notifyItemRemoved(position);
     }
     @Override

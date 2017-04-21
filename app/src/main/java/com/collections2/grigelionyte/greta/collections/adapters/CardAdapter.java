@@ -80,8 +80,6 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
 
     public void remove(int position) {
         cardData.remove(position);
-        ItemsCollection itemsCollection = cardData.get(position);
-        db.deleteCollection(itemsCollection);
         notifyItemRemoved(position);
     }
 

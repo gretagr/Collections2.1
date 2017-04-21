@@ -11,20 +11,13 @@ public class ItemsCollection {
 
     }
 
-    public ItemsCollection(String title, String subTitle, byte[] imageResId, String categories, int favorite) {
+    public ItemsCollection(int cardId, String title, String subTitle, byte[] imageResId, String categories, int favorite) {
+        this.cardId = cardId;
         this.title = title;
         this.subTitle = subTitle;
         this.imageResId = imageResId;
         this.categories = categories;
         this.favorite = favorite;
-
-    }
-
-    public ItemsCollection(String title, String subTitle, byte[] imageResId, String categories) {
-        this.title = title;
-        this.subTitle = subTitle;
-        this.imageResId = imageResId;
-        this.categories = categories;
 
     }
 

@@ -39,7 +39,6 @@ public class NewCollection extends AppCompatActivity {
     ArrayList<String> categoriesList = null;
     ArrayAdapter<String> categoriesadapter;
     ImageView addImage;
-    String imageName = "collections";
     File imageFile;
     Uri uri;
     MyDBHandler db;
@@ -91,12 +90,19 @@ public class NewCollection extends AppCompatActivity {
                        Toast.makeText(getApplicationContext(), "Collection not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                    }
                    else {
-                       ItemsCollection collection = new ItemsCollection(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), imageViewToByte(addImage), catList);
+                       ItemsCollection collection = new ItemsCollection(
+                               db.getCollectionsCount(),
+                               String.valueOf(itemName.getText()),
+                               String.valueOf(itemDesc.getText()),
+                               imageViewToByte(addImage),
+                               catList, 0);
                        db.addCollection(collection);
+
                        Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
+
                        Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
+
                        startActivity(home);
-                       Toast.makeText(getApplicationContext(), "cat = " + catList, Toast.LENGTH_LONG).show();
                     }
                 }
                 });
@@ -104,12 +110,6 @@ public class NewCollection extends AppCompatActivity {
                 addCat();
                 deleteCat();
 
-    }
-    private String getCurrentDateAndTime() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-        String formattedDate = df.format(c.getTime());
-        return formattedDate;
     }
 
     public void launchCamera(View view) throws IOException {
@@ -121,8 +121,6 @@ public class NewCollection extends AppCompatActivity {
         camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
         startActivityForResult(camera, REQUEST_TAKE_PHOTO);
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -156,8 +154,8 @@ public class NewCollection extends AppCompatActivity {
         return byteArray;
     }
 
-            private void deleteCat() {
-                categoriesListview.setOnItemLongClickListener(
+    private void deleteCat() {
+        categoriesListview.setOnItemLongClickListener(
                         new AdapterView.OnItemLongClickListener() {
                             @Override
                             public boolean onItemLongClick(AdapterView<?> n_adapter, View item, int pos, long id) {

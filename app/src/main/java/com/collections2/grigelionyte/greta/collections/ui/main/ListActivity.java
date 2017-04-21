@@ -93,7 +93,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         Item item = (Item) listData.get(p);
         Intent i = new Intent(this, DetailActivity.class);
         String tempT = item.getTitle();
-        int id = db.getColIdInItems(tempT);
+        int id = db.getCollectionIdByName(tempT);
         String collectionName = db.getColName(id);
         Bundle extras = new Bundle();
         extras.putString(EXTRA_QUOTE, item.getTitle());
@@ -110,14 +110,14 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     @Override
     public void onSecondaryIconClick(int p) {
         Item item = (Item) listData.get(p);
-        String name = item.getTitle();
+
         if (item.getFavorite() == 1) {
            item.setFavorite(0);
-            db.setNotFavorite(name);
+            db.setNotFavorite(item);
 
         } else  {
             item.setFavorite(1);
-            db.setFavoriteItem(name);
+            db.setFavoriteItem(item);
 
        }
         adapter.notifyDataSetChanged();

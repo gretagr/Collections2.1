@@ -111,9 +111,19 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                 } else if (itemDesc.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Item item = new Item(String.valueOf(itemName.getText()), String.valueOf(itemDesc.getText()), imageViewToByte(addImage), categories, catResult, db.getId(text));
+                    Item item = new Item(
+                            db.getItemsCount(),
+                            String.valueOf(itemName.getText()),
+                            String.valueOf(itemDesc.getText()),
+                            imageViewToByte(addImage),
+                            categories,
+                            catResult,
+                            db.getId(text), 0);
+
                     db.addItem(item);
+
                     Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
+
                     Intent home = new Intent(NewItem.this, CollectionsActivity.class);
                     startActivity(home);
                 }

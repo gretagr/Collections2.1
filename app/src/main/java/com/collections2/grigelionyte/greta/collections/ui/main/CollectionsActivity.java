@@ -188,6 +188,8 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
 
     @Override
     public void onDeleteClick(int p) {
+        ItemsCollection itemsCollection = (ItemsCollection)cardData.get(p);
+        db.deleteCollection(itemsCollection);
         adapter.remove(p);
     }
 
@@ -196,7 +198,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
+        appBarLayout.setExpanded(false);
 
         // hiding & showing the title when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
