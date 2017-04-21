@@ -1,8 +1,6 @@
 package com.collections2.grigelionyte.greta.collections.ui.main;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -40,10 +38,8 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private ListItemAdapter adapter;
     private ArrayList listData;
     private Toolbar toolbar;
+    String getT;
     FloatingActionButton additem;
-
-
-
     MyDBHandler db;
 
     @Override
@@ -51,7 +47,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         db = new MyDBHandler(getApplicationContext());
-        String getT = getIntent().getStringExtra("name_of_collection");
+        getT = getIntent().getStringExtra("name_of_collection");
         int colId = db.getId(getT);
 
         listData = (ArrayList) db.getAllItemsFromCollection(colId);
@@ -79,6 +75,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         ItemTouchHelper.Callback callback = new ListTouchHelper(adapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(recyclerView);
+
         recyclerView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -167,7 +164,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private void initCollapsingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
+        collapsingToolbar.setTitle(getT);
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
 
@@ -182,11 +179,11 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.app_name));
+                    collapsingToolbar.setTitle(getT);
 
                     isShow = true;
                 } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
+                    collapsingToolbar.setTitle(getT);
 
                     isShow = false;
                 }

@@ -58,6 +58,9 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         recView.setAdapter(adapter);
         adapter.setItemClickCallback(this);
 
+
+
+
         // FLOATING ACTION BUTTON START-------------------------------------------------------------------------------------------------------------
 
 
@@ -169,7 +172,23 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
 
     @Override
     public void onSecondaryIconClick(int p) {
+        ItemsCollection item = (ItemsCollection) cardData.get(p);
 
+        if (item.getFavoriteCol() == 1) {
+            item.setFavoriteCol(0);
+            db.setNotFavoriteCol(item);
+
+        } else  {
+            item.setFavoriteCol(1);
+           db.setFavoriteCol(item);
+
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDeleteClick(int p) {
+        adapter.remove(p);
     }
 
     private void initCollapsingToolbar() {
@@ -212,4 +231,5 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         intent.putExtra("name_of_collection", nameofcol);
         return intent;
     }
+
 }

@@ -24,4 +24,9 @@ public class ListTouchHelper extends ItemTouchHelper.SimpleCallback {
 
         listItemAdapter.remove(viewHolder.getAdapterPosition());
     }
+
+    @Override
+    public boolean isLongPressDragEnabled() {
+        return super.isLongPressDragEnabled();
+    }
 }

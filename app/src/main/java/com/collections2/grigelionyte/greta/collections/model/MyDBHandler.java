@@ -96,10 +96,10 @@ public class MyDBHandler extends SQLiteOpenHelper{
         db.close();
     }
     // delete values
-    public void deleteCollection(ItemsCollection collection) {
+    public int deleteCollection(ItemsCollection collection) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_COLLECTIONS, COLUMN_NAME, new String[]{String.valueOf(collection.getTitle())} );
-        db.close();
+        return db.delete(TABLE_COLLECTIONS, COLUMN_NAME + "=?", new String[]{String.valueOf(collection.getColTitle())});
+
 
     }
     public int deleteItem(Item item) {
@@ -115,7 +115,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                ItemsCollection collection = new ItemsCollection( cursor.getString(1), cursor.getString(2), cursor.getBlob(3), cursor.getString(4));
+                ItemsCollection collection = new ItemsCollection( cursor.getString(1), cursor.getString(2), cursor.getBlob(3), cursor.getString(4), Integer.parseInt(cursor.getString(5)));
                 collections.add(collection);
             } while (cursor.moveToNext());
         }
@@ -223,10 +223,37 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public int getFavorite(String name){
         SQLiteDatabase db = getWritableDatabase();
         int res = 0;
-        String[] columns = {COLUMN_NAME, COLUMN_ITEM_FAVORITE};
-        Cursor cursor = db.query(TABLE_ITEMS, columns, COLUMN_NAME + " = '"+ name + "'", null, null, null, null );
+        String[] columns = {COLUMN_ITEM_NAME, COLUMN_ITEM_FAVORITE};
+        Cursor cursor = db.query(TABLE_ITEMS, columns, COLUMN_ITEM_NAME + " = '"+ name + "'", null, null, null, null );
         while (cursor.moveToNext()) {
             int index = cursor.getColumnIndex(COLUMN_ITEM_FAVORITE);
+            res = cursor.getInt(index);
+        }
+        return res;
+    }
+    //-------------------------------------------------------------------------------------------------------------
+    public int setFavoriteCol(ItemsCollection itemsCollection){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String name = itemsCollection.getColTitle();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_FAVORITE, 1);
+        return db.update(TABLE_COLLECTIONS, contentValues, COLUMN_NAME + " =? ", new String[] {name});
+    }
+    public int setNotFavoriteCol(ItemsCollection itemsCollection){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String name = itemsCollection.getColTitle();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_FAVORITE, 0);
+        return db.update(TABLE_COLLECTIONS, contentValues, COLUMN_NAME + " =? ", new String[] {name});
+    }
+    public int getFavoriteCol(ItemsCollection itemsCollection){
+        SQLiteDatabase db = getWritableDatabase();
+        String name = itemsCollection.getColTitle();
+        int res = 0;
+        String[] columns = {COLUMN_NAME, COLUMN_FAVORITE};
+        Cursor cursor = db.query(TABLE_COLLECTIONS, columns, COLUMN_NAME + " = '"+ name + "'", null, null, null, null );
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(COLUMN_FAVORITE);
             res = cursor.getInt(index);
         }
         return res;
