@@ -7,9 +7,20 @@ public class Item {
     private int imgEdit;
     private int imgDelete;
     private int colId;
+    private int id;
     private int favorite;
     public Item(){
 
+    }
+    public Item(int id, String title, String subTitle,byte[] imageResId, String categories, String itemCatText, int colId, int favorite){
+        this.id = id;
+        this.title = title;
+        this.subTitle = subTitle;
+        this.categories = categories;
+        this.itemCatText = itemCatText;
+        this.imageResId = imageResId;
+        this.colId = colId;
+        this.favorite = favorite;
     }
     public Item(String title, String subTitle,byte[] imageResId, String categories, String itemCatText, int colId, int favorite){
         this.title = title;
@@ -30,7 +41,12 @@ public class Item {
 
     }
 
-
+    public int getId(){
+        return id;
+    }
+    public void setId(int id){
+        this.id = id;
+    }
     public int getColId() {
         return colId;
     }

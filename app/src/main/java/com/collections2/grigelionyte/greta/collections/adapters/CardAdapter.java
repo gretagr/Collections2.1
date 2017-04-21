@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.model.ItemsCollection;
+import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +24,14 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
     private LayoutInflater inflater;
     private ItemClickCallback itemClickCallback;
     private Context context;
+    MyDBHandler db;
 
 
     public interface ItemClickCallback {
         void onItemClick(int p);
         void onSecondaryIconClick(int p);
+        void onDeleteClick(int p);
+
     }
 
     public void setItemClickCallback(final ItemClickCallback itemClickCallback) {
@@ -37,6 +41,7 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
     public CardAdapter(List <ItemsCollection> cardData, Context c){
         inflater = LayoutInflater.from(c);
         this.cardData = cardData;
+        this.db = new MyDBHandler(c);
     }
     // initialize cardview holder
     @Override
@@ -47,18 +52,20 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
     //bind view to data
     @Override
     public void onBindViewHolder(CardHolder holder, int position) {
+        ItemsCollection itemsCollection = cardData.get(position);
 
-        ItemsCollection item = cardData.get(position);
-        holder.title.setText(item.getColTitle());
-        holder.subTitle.setText(item.getSubTitle());
-        byte[] image = item.getColImage();
+        holder.title.setText(itemsCollection.getColTitle());
+        holder.subTitle.setText(itemsCollection.getSubTitle());
+        byte[] image = itemsCollection.getColImage();
         Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+        holder.delete.setImageResource(R.drawable.ic_delete_black_18dp);
         holder.image.setImageBitmap(bitmap);
-        // if (item.isFavourite()){
-        //     holder.favourite.setImageResource(R.drawable.ic_favorite_black_18dp);
-        //  } else {
-        //     holder.favourite.setImageResource(R.drawable.ic_favorite_border_black_18dp);
-        //  }
+        if (itemsCollection.getFavoriteCol() == 1) {
+            holder.favorite.setImageResource(R.drawable.ic_favorite_black_18dp);
+        }
+        else if (itemsCollection.getFavoriteCol() == 0){
+            holder.favorite.setImageResource(R.drawable.ic_favorite_border_black_18dp);
+        }
     }
 
     public void setCardData(ArrayList <ItemsCollection> exerciseList) {
@@ -72,7 +79,9 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
     }
 
     public void remove(int position) {
-
+        cardData.remove(position);
+        ItemsCollection itemsCollection = cardData.get(position);
+        db.deleteCollection(itemsCollection);
         notifyItemRemoved(position);
     }
 
@@ -81,11 +90,17 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
         TextView title;
         TextView subTitle;
         View container;
+        ImageView delete;
+        ImageView favorite;
 
 
         public CardHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.im_item_image);
+            favorite = (ImageView)itemView.findViewById(R.id.secondary);
+            favorite.setOnClickListener(this);
+            delete = (ImageView)itemView.findViewById(R.id.delete);
+            delete.setOnClickListener(this);
             subTitle = (TextView) itemView.findViewById(R.id.lbl_item_sub_title);
             title = (TextView) itemView.findViewById(R.id.lbl_item_text);
             container = itemView.findViewById(R.id.cont_item_root);
@@ -95,29 +110,15 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder>{
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.cont_item_root){
+            if (v.getId() == R.id.cont_item_root) {
                 itemClickCallback.onItemClick(getAdapterPosition());
-            } else {
+            }
+            else if (v.getId() == R.id.delete){
+                itemClickCallback.onDeleteClick(getAdapterPosition());
+            }
+            else if (v.getId() == R.id.secondary){
                 itemClickCallback.onSecondaryIconClick(getAdapterPosition());
             }
         }
-    }
-    public void setListData(ArrayList<ItemsCollection> exerciseList) {
-        this.cardData.clear();
-        this.cardData.addAll(exerciseList);
-    }
-    public long getItemId(int position) {
-        return (getItems() != null && !getItems().isEmpty()) ? getItems().get(position).getCardId() : position;
-    }
-
-    public ItemsCollection getItem(int position) {
-        return (getItems() != null && !getItems().isEmpty()) ? getItems().get(position) : null ;
-    }
-    public void setItems(List<ItemsCollection> listData) {
-        this.cardData = listData;
-    }
-
-    public List<ItemsCollection> getItems() {
-        return cardData;
     }
 }

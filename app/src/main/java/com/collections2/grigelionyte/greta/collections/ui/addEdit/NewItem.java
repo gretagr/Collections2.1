@@ -29,7 +29,6 @@ import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivi
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;

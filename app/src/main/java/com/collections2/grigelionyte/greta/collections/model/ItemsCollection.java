@@ -1,24 +1,33 @@
 package com.collections2.grigelionyte.greta.collections.model;
 
-import android.support.v7.app.AppCompatActivity;
-
-public class ItemsCollection extends AppCompatActivity {
+public class ItemsCollection {
 
     private String title, subTitle, categories;
     private byte[] imageResId;
     private int cardId;
-    private boolean favorite = false;
+    private int favorite;
 
-    public ItemsCollection(){
+    public ItemsCollection() {
 
     }
-    public ItemsCollection(String title, String subTitle, byte[] imageResId, String categories){
+
+    public ItemsCollection(String title, String subTitle, byte[] imageResId, String categories, int favorite) {
+        this.title = title;
+        this.subTitle = subTitle;
+        this.imageResId = imageResId;
+        this.categories = categories;
+        this.favorite = favorite;
+
+    }
+
+    public ItemsCollection(String title, String subTitle, byte[] imageResId, String categories) {
         this.title = title;
         this.subTitle = subTitle;
         this.imageResId = imageResId;
         this.categories = categories;
 
     }
+
     public int getCardId() {
         return cardId;
     }
@@ -26,6 +35,7 @@ public class ItemsCollection extends AppCompatActivity {
     public void setCardId(int cardId) {
         this.cardId = cardId;
     }
+
     public String getColTitle() {
         return title;
     }
@@ -58,10 +68,11 @@ public class ItemsCollection extends AppCompatActivity {
         this.categories = categories;
     }
 
-    public void setFavorite(boolean favorite){
-
-    }
-    public boolean getFavorite(){
+    public int getFavoriteCol() {
         return favorite;
+    }
+
+    public void setFavoriteCol(int favorite) {
+        this.favorite = favorite;
     }
 }

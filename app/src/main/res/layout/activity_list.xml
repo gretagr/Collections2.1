@@ -20,8 +20,8 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="24dp"
+            app:expandedTitleMarginStart="24dp"
             app:expandedTitleTextAppearance="@android:color/transparent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -49,14 +49,14 @@
                         android:id="@+id/love_music"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="COLLECTIONS"
-                        android:textSize="30dp"
+                        android:text=""
+                        android:textSize="20dp"
                         android:textColor="@android:color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Keep Your Stuff In Order"
+                        android:text=""
                         android:textSize="18dp"
                         android:textColor="@android:color/white" />
 
@@ -87,7 +87,7 @@
         app:srcCompat="@drawable/ic_add_white_24dp"
         android:id="@+id/fb_add_btn"
         app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|center"
-        android:layout_marginLeft="16dp"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_marginEnd="16dp"
         />
 </android.support.design.widget.CoordinatorLayout>
