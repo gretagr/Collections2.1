@@ -50,6 +50,9 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     TextView categoriesView;
     LinearLayout linearLayout;
     String catResult = null;
+    private static final String EXTRA_FOR_NEW = "EXTRA_FOR_NEW";
+    private static final String EXTRA_ID = "EXTRA_ID";
+    String colTitle;
 
 
 
@@ -58,7 +61,9 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
-
+        Bundle extras = getIntent().getBundleExtra(EXTRA_FOR_NEW);
+        colTitle = extras.getString(EXTRA_ID);
+    Toast.makeText(getApplicationContext(), "title=" + colTitle, Toast.LENGTH_SHORT).show();
         linearLayout = (LinearLayout) findViewById(R.id.linear);
         itemDesc = (EditText) findViewById(R.id.itemDesc);
         itemName = (EditText) findViewById(R.id.itemName);
@@ -173,6 +178,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
             names.add(name);
         }
         spinner.setAdapter(spAdapter);
+        spinner.setSelection(spAdapter.getPosition(colTitle));
     }
 
     @Override

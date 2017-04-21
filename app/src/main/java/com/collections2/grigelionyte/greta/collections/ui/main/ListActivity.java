@@ -33,6 +33,9 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private static final String EXTRA_CAT1 = "EXTRA_CAT1";
     private static final String EXTRA_CAT2 = "EXTRA_CAT2";
     private static final String EXTRA_ID = "EXTRA_ID";
+    private static final String COLLECTION_NAME_EXTRA = "COLLECTION_NAME_EXTRA";
+    private static final String IMAGE_EXTRA = "IMAGE_EXTRA";
+    private static final String EXTRA_FOR_NEW = "EXTRA_FOR_NEW";
 
     private RecyclerView recyclerView;
     private ListItemAdapter adapter;
@@ -46,8 +49,11 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
         db = new MyDBHandler(getApplicationContext());
+        Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
         getT = getIntent().getStringExtra("name_of_collection");
+
         int colId = db.getId(getT);
 
         listData = (ArrayList) db.getAllItemsFromCollection(colId);
@@ -64,14 +70,19 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         setSupportActionBar(toolbar);
 
         initCollapsingToolbar();
+
         additem = (FloatingActionButton) findViewById(R.id.fb_add_btn);
         additem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent in = new Intent(ListActivity.this, NewItem.class);
+                Bundle extras = new Bundle();
+                in.putExtra(EXTRA_ID, getT);
+                in.putExtra(EXTRA_FOR_NEW, extras);
                 startActivity(in);
             }
         });
+
         ItemTouchHelper.Callback callback = new ListTouchHelper(adapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(recyclerView);

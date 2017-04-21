@@ -34,6 +34,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
     private CardAdapter adapter;
     private ArrayList cardData;
     MyDBHandler db;
+    int colCount;
 
 
     @Override
@@ -58,7 +59,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         recView.setAdapter(adapter);
         adapter.setItemClickCallback(this);
 
-
+        colCount = db.getCollectionsCount();
 
 
         // FLOATING ACTION BUTTON START-------------------------------------------------------------------------------------------------------------
@@ -106,19 +107,25 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
 
         });
         // floating button add item action-----------------------------------------------------------------------------------------------------------
-        addItem.setOnClickListener(new View.OnClickListener() {
-            FloatingActionButton add = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-            @Override
-            public void onClick(View view) {
-                itemLayout.setVisibility(View.GONE);
-                colLayout.setVisibility(View.GONE);
-                colLayout.startAnimation(mHideLayout);
-                itemLayout.startAnimation(mHideLayout);
-                add.startAnimation(mHideButton);
-                Intent addItemActive = new Intent(CollectionsActivity.this, NewItem.class);
-                startActivity(addItemActive);
-            }
-        });
+        if (colCount < 1) {
+            addItem.setEnabled(false);
+        }
+        else {
+            addItem.setOnClickListener(new View.OnClickListener() {
+                FloatingActionButton add = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+
+                @Override
+                public void onClick(View view) {
+                    itemLayout.setVisibility(View.GONE);
+                    colLayout.setVisibility(View.GONE);
+                    colLayout.startAnimation(mHideLayout);
+                    itemLayout.startAnimation(mHideLayout);
+                    add.startAnimation(mHideButton);
+                    Intent addItemActive = new Intent(CollectionsActivity.this, NewItem.class);
+                    startActivity(addItemActive);
+                }
+            });
+        }
         // floating button add collection action---------------------------------------------------------------------------------------------------------
         addCol.setOnClickListener(new View.OnClickListener() {
             FloatingActionButton add = (FloatingActionButton) findViewById(R.id.floatingActionButton);
@@ -200,7 +207,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.setExpanded(false);
 
-        // hiding & showing the title when toolbar expanded & collapsed
+
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -222,6 +229,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
             }
         });
     }
+
     @Override
     protected void onResume() {
       super.onResume();
