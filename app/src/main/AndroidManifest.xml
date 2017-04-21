@@ -25,7 +25,9 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths">
+
+            </meta-data>
         </provider>
 
         <activity
@@ -47,18 +49,28 @@
         <activity
             android:name=".ui.addEdit.NewCollection"
             android:parentActivityName=".ui.main.CollectionsActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".ui.addEdit.NewItem"
             android:parentActivityName=".ui.main.CollectionsActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".ui.main.ListActivity"
-            android:parentActivityName=".ui.main.CollectionsActivity"></activity>
+            android:parentActivityName=".ui.main.CollectionsActivity">
+
+        </activity>
         <activity
             android:name=".ui.main.DetailActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.addEdit.UpdateItem"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".ui.addEdit.UpdateItem">
+
+        </activity>
     </application>
 
 </manifest>
