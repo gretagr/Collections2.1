@@ -77,7 +77,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
             public void onClick(View view) {
                 Intent in = new Intent(ListActivity.this, NewItem.class);
                 Bundle extras = new Bundle();
-                in.putExtra(EXTRA_ID, getT);
+                in.putExtra(COLLECTION_NAME_EXTRA, getT);
                 in.putExtra(EXTRA_FOR_NEW, extras);
                 startActivity(in);
             }

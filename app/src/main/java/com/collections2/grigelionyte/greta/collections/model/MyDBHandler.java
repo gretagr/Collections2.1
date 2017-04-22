@@ -108,9 +108,9 @@ public class MyDBHandler extends SQLiteOpenHelper{
     // delete values--------------------------------------------------------------------------
     public int deleteCollection(ItemsCollection collection) {
         SQLiteDatabase db = getWritableDatabase();
-        return db.delete(TABLE_COLLECTIONS, COLUMN_ID + "=?", new String[]{String.valueOf(collection.getCardId())});
-
-
+        int dbDeleted = db.delete(TABLE_COLLECTIONS, COLUMN_ID + "=?", new String[]{String.valueOf(collection.getCardId())});
+        db.delete(TABLE_ITEMS, COLUMN_ITEM_COLLECTION_ID + "=?", new String[]{String.valueOf(collection.getCardId())});
+        return dbDeleted;
     }
     public int deleteItem(Item item) {
         SQLiteDatabase db = getWritableDatabase();

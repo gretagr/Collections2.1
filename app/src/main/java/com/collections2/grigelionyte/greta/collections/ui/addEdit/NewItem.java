@@ -51,7 +51,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     LinearLayout linearLayout;
     String catResult = null;
     private static final String EXTRA_FOR_NEW = "EXTRA_FOR_NEW";
-    private static final String EXTRA_ID = "EXTRA_ID";
+    private static final String COLLECTION_NAME_EXTRA = "COLLECTION_NAME_EXTRA";
     String colTitle;
 
 
@@ -62,7 +62,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
         Bundle extras = getIntent().getBundleExtra(EXTRA_FOR_NEW);
-        colTitle = extras.getString(EXTRA_ID);
+        colTitle = extras.getString(COLLECTION_NAME_EXTRA);
     Toast.makeText(getApplicationContext(), "title=" + colTitle, Toast.LENGTH_SHORT).show();
         linearLayout = (LinearLayout) findViewById(R.id.linear);
         itemDesc = (EditText) findViewById(R.id.itemDesc);
