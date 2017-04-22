@@ -1,5 +1,6 @@
 package com.collections2.grigelionyte.greta.collections.ui.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -33,10 +34,9 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private static final String EXTRA_CAT1 = "EXTRA_CAT1";
     private static final String EXTRA_CAT2 = "EXTRA_CAT2";
     private static final String EXTRA_ID = "EXTRA_ID";
-    private static final String COLLECTION_NAME_EXTRA = "COLLECTION_NAME_EXTRA";
-    private static final String IMAGE_EXTRA = "IMAGE_EXTRA";
-    private static final String EXTRA_FOR_NEW = "EXTRA_FOR_NEW";
-
+    String COLLECTION_NAME_EXTRA = "COLLECTION_NAME_EXTRA";
+    String IMAGE_EXTRA = "IMAGE_EXTRA";
+    String EXTRA_FOR_NEW = "EXTRA_FOR_NEW";
     private RecyclerView recyclerView;
     private ListItemAdapter adapter;
     private ArrayList listData;
@@ -44,6 +44,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     String getT;
     FloatingActionButton additem;
     MyDBHandler db;
+    int REQ_CODE_INTENT = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,18 +76,14 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         additem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent in = new Intent(ListActivity.this, NewItem.class);
-                Bundle extras = new Bundle();
-                in.putExtra(COLLECTION_NAME_EXTRA, getT);
-                in.putExtra(EXTRA_FOR_NEW, extras);
-                startActivity(in);
+               Intent intent = newItemIntent(ListActivity.this, getT);
+                startActivityForResult(intent, REQ_CODE_INTENT);
             }
         });
 
         ItemTouchHelper.Callback callback = new ListTouchHelper(adapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(recyclerView);
-
         recyclerView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -138,7 +135,6 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     public void onEditClick(int p) {
         Item itemToTransfer = (Item) listData.get(p);
         Intent intentEdit = new Intent(this, UpdateItem.class);
-
         Bundle extras = new Bundle();
         extras.putString(EXTRA_QUOTE, itemToTransfer.getTitle());
         extras.putString(EXTRA_ATTR, itemToTransfer.getSubTitle());
@@ -202,7 +198,11 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
             }
         });
     }
-
+    public static Intent newItemIntent(Context context, String nameOfCol) {
+        Intent intent = new Intent(context, NewItem.class);
+        intent.putExtra("name_of_collection_to_send", nameOfCol);
+        return intent;
+    }
 
 
 }

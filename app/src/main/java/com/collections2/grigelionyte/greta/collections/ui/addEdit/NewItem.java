@@ -50,9 +50,8 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     TextView categoriesView;
     LinearLayout linearLayout;
     String catResult = null;
-    private static final String EXTRA_FOR_NEW = "EXTRA_FOR_NEW";
-    private static final String COLLECTION_NAME_EXTRA = "COLLECTION_NAME_EXTRA";
     String colTitle;
+    private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
 
 
 
@@ -61,9 +60,9 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
-        Bundle extras = getIntent().getBundleExtra(EXTRA_FOR_NEW);
-        colTitle = extras.getString(COLLECTION_NAME_EXTRA);
-    Toast.makeText(getApplicationContext(), "title=" + colTitle, Toast.LENGTH_SHORT).show();
+        Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
+        colTitle = getIntent().getStringExtra("name_of_collection_to_send");
+
         linearLayout = (LinearLayout) findViewById(R.id.linear);
         itemDesc = (EditText) findViewById(R.id.itemDesc);
         itemName = (EditText) findViewById(R.id.itemName);
