@@ -212,11 +212,11 @@ public class MyDBHandler extends SQLiteOpenHelper{
         return id;
     }
 
-    public int getItemIdByName(Item item){
+    public int getItemIdByName(String name){
         SQLiteDatabase db = getWritableDatabase();
         int id = 0;
         String[] columns = {COLUMN_ITEM_ID, COLUMN_ITEM_NAME};
-        Cursor cursor = db.query(TABLE_ITEMS, columns, COLUMN_ITEM_NAME + " = '"+ item.getTitle() + "'", null, null, null, null );
+        Cursor cursor = db.query(TABLE_ITEMS, columns, COLUMN_ITEM_NAME + " = '"+ name + "'", null, null, null, null );
         while (cursor.moveToNext()) {
             int index = cursor.getColumnIndex(COLUMN_ITEM_ID);
 
@@ -325,6 +325,36 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         return res;
     }
+
+    public Item getItem(int id){
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_ITEMS, new String[]{
+                COLUMN_ITEM_ID,
+                COLUMN_ITEM_NAME,
+                COLUMN_ITEM_DESCRIPTION,
+                COLUMN_ITEM_URI,
+                COLUMN_ITEM_CATEGORIES,
+                COLUMN_ITEM_CATEGORIES_TEXT,
+                COLUMN_ITEM_FAVORITE,
+                COLUMN_ITEM_COLLECTION_ID}, COLUMN_ITEM_ID + "=?", new String[] {String.valueOf(id)}, null, null, null, null);
+        if(cursor != null)
+            cursor.moveToFirst();
+
+        Item item = new Item(
+                cursor.getInt(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getBlob(3),
+                cursor.getString(4),
+                cursor.getString(5),
+                cursor.getInt(6),
+                cursor.getInt(7));
+        db.close();
+        cursor.close();
+        return item;
+
+    }
     // FAVORITES END ---------------------------------------------------------------------------
     public int updateItem(Item item){
         SQLiteDatabase db = getWritableDatabase();
@@ -333,7 +363,6 @@ public class MyDBHandler extends SQLiteOpenHelper{
         contentValues.put(COLUMN_ITEM_DESCRIPTION, item.getSubTitle());
         contentValues.put(COLUMN_ITEM_URI, item.getImage());
         contentValues.put(COLUMN_ITEM_CATEGORIES_TEXT, item.getItemCat());
-
         return db.update(TABLE_ITEMS, contentValues, COLUMN_ITEM_ID + "=?", new String[] {String.valueOf(item.getId())});
     }
 

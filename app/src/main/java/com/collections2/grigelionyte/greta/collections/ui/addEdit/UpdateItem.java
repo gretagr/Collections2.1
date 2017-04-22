@@ -69,7 +69,7 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
     private static final String EXTRA_CAT1 = "EXTRA_CAT1";
     private static final String EXTRA_CAT2 = "EXTRA_CAT2";
     private static final String EXTRA_ID = "EXTRA_ID";
-
+    int itemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +87,11 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         catDetails = extras.getString(EXTRA_CAT2);
         collName = extras.getString(EXTRA_ID);
 
-        item = new Item();
         spinner = (Spinner) findViewById(R.id.spinner_collections);
         spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, names);
 
-
-
+        itemId = db.getItemIdByName(title);
+        item = db.getItem(itemId);
 
         if (catNames != null && catDetails != null) {
             String str[] = catNames.split(", ");
@@ -183,6 +182,9 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                     Toast.makeText(getApplicationContext(), "item updated", Toast.LENGTH_SHORT).show();
                     Intent home = new Intent(UpdateItem.this, CollectionsActivity.class);
                     startActivity(home);
+
+
+
                 }
 
             }

@@ -110,6 +110,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         extras.putString(EXTRA_CAT1, item.getCategories());
         extras.putString(EXTRA_CAT2, item.getItemCat());
         extras.putString(EXTRA_ID, getT);
+
         i.putExtra(BUNDLE_EXTRAS, extras);
 
         startActivity(i);
