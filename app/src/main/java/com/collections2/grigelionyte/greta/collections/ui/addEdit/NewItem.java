@@ -3,6 +3,7 @@ package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -51,6 +52,8 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     LinearLayout linearLayout;
     String catResult = null;
     String colTitle;
+    byte[] standartCheck;
+    byte[] setNoPhoto;
     private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
 
 
@@ -89,7 +92,16 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
             }
         });
         spinner.setOnItemSelectedListener(this);
-
+        //add img to byte
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pink_add_photo);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        standartCheck = stream.toByteArray();
+// color to byte
+        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.color_middle_blue);
+        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
+        bitmap1.compress(Bitmap.CompressFormat.PNG, 100, stream1);
+        setNoPhoto = stream1.toByteArray();
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,13 +120,31 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                 else {
                     catResult = null;
                 }
+
                 Toast.makeText(getApplicationContext(), "catresult = " + catResult, Toast.LENGTH_LONG).show();
                 String text = spinner.getSelectedItem().toString();
                 if (itemName.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the name.", Toast.LENGTH_SHORT).show();
                 } else if (itemDesc.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the description.", Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else if (Arrays.equals(imageViewToByte(addImage), standartCheck)){
+                    Item item = new Item(
+                            String.valueOf(itemName.getText()),
+                            String.valueOf(itemDesc.getText()),
+                            setNoPhoto,
+                            categories,
+                            catResult,
+                            db.getId(text), 0);
+
+                    db.addItem(item);
+
+                    Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
+
+                    Intent home = new Intent(NewItem.this, CollectionsActivity.class);
+                    startActivity(home);
+                }
+                else {
                     Item item = new Item(
                             String.valueOf(itemName.getText()),
                             String.valueOf(itemDesc.getText()),

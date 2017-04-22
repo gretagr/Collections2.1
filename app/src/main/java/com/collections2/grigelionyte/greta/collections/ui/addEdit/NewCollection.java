@@ -2,6 +2,7 @@ package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 
@@ -43,6 +45,8 @@ public class NewCollection extends AppCompatActivity {
     MyDBHandler db;
     String result = null;
     String catList = null;
+    byte[] standartCheck;
+    byte[] setNoPhoto;
 
 
     @Override
@@ -59,7 +63,16 @@ public class NewCollection extends AppCompatActivity {
         categoriesList = new ArrayList<String>();
         categoriesadapter = new ArrayAdapter<String>(NewCollection.this, android.R.layout.simple_list_item_1, categoriesList);
         categoriesListview.setAdapter(categoriesadapter);
-
+//add img to byte
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pink_add_photo);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        standartCheck = stream.toByteArray();
+// color to byte
+        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.color_middle_blue);
+        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
+        bitmap1.compress(Bitmap.CompressFormat.PNG, 100, stream1);
+        setNoPhoto = stream1.toByteArray();
 
         cancel = (Button) findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +100,20 @@ public class NewCollection extends AppCompatActivity {
                        Toast.makeText(getApplicationContext(), "Collection not created. You must enter the name.", Toast.LENGTH_SHORT).show();
                    } else if (itemDesc.getText().toString().isEmpty()) {
                        Toast.makeText(getApplicationContext(), "Collection not created. You must enter the description.", Toast.LENGTH_SHORT).show();
+                   }
+                   else if (Arrays.equals(imageViewToByte(addImage), standartCheck)){
+                       ItemsCollection collection = new ItemsCollection(
+                               String.valueOf(itemName.getText()),
+                               String.valueOf(itemDesc.getText()),
+                               setNoPhoto,
+                               catList, 0);
+                       db.addCollection(collection);
+
+                       Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
+
+                       Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
+
+                       startActivity(home);
                    }
                    else {
                        ItemsCollection collection = new ItemsCollection(

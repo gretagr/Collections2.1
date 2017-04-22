@@ -4,21 +4,19 @@
     tools:context="com.collections.com.grigelionytegmail.greta.mycollections.MainActivity" >
 
     <item android:id="@+id/action_sort_favorites"
-        android:title="@string/action1"
+        android:title="@string/sort_fav"
         android:orderInCategory="100"
         app:showAsAction="never"
 
         />
     <item android:id="@+id/action_sort_AToZ"
-        android:title="@string/action2"
+        android:title="@string/sort_AtoZ"
         android:orderInCategory="100"
-        app:actionViewClass="@string/action1"
         app:showAsAction="never"
 
         />
     <item
         android:id="@+id/action_change_view"
-        android:icon="@drawable/ic_view_stream_white_24dp"
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget"
         android:title=""

@@ -70,6 +70,8 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
     private static final String EXTRA_CAT2 = "EXTRA_CAT2";
     private static final String EXTRA_ID = "EXTRA_ID";
     int itemId;
+    byte[] standartCheck;
+    byte[] setNoPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +150,16 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                 startActivity(cancel);
             }
         });
-
+//add img to byte
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pink_add_photo);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        standartCheck = stream.toByteArray();
+// color to byte
+        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.color_middle_blue);
+        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
+        bitmap1.compress(Bitmap.CompressFormat.PNG, 100, stream1);
+        setNoPhoto = stream1.toByteArray();
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,7 +183,20 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                     Toast.makeText(getApplicationContext(), "Item not updated You must enter the name.", Toast.LENGTH_SHORT).show();
                 } else if (itemDesc.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not updated You must enter the description.", Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else if (Arrays.equals(imageViewToByte(addImage), standartCheck)){
+                    item.setTitle(itemTitle.getText().toString());
+                    item.setSubTitle(itemD.getText().toString());
+                    item.setItemCatText(catResult);
+                    item.setImage(imageViewToByte(addImage));
+                    db.updateItem(item);
+                    Toast.makeText(getApplicationContext(), "item updated" + item.getId(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "item updated", Toast.LENGTH_SHORT).show();
+                    Intent home = new Intent(UpdateItem.this, CollectionsActivity.class);
+                    startActivity(home);
+                }
+
+                else {
                     item.setTitle(itemTitle.getText().toString());
                     item.setSubTitle(itemD.getText().toString());
                     item.setItemCatText(catResult);

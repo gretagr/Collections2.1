@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -37,7 +38,13 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
     private ArrayList cardData;
     MyDBHandler db;
     int colCount;
+    MenuItem count;
     ItemsCollection itemToDelete;
+    GridLayoutManager grid1;
+    GridLayoutManager grid2;
+    int num = 0;
+
+
 
 
     @Override
@@ -53,10 +60,12 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         initCollapsingToolbar();
         // SETTING CARD VIEW ----------------------------------------------------------------------------------------------------------------------
         cardData = (ArrayList) db.getAllCollections();
-
+        grid1 = new GridLayoutManager(this, 1);
+        grid2 = new GridLayoutManager(this, 2);
         recView = (RecyclerView)findViewById(R.id.rec_list);
         recView.setItemAnimator(new DefaultItemAnimator());
-        recView.setLayoutManager(new GridLayoutManager(this, 2));
+        recView.setLayoutManager(grid2);
+
 
         adapter = new CardAdapter(cardData, this);
         recView.setAdapter(adapter);
@@ -153,6 +162,9 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.menu_main, menu);
+            count = menu.findItem(R.id.action_change_view);
+            MenuItemCompat.getActionView(count);
+            count.setIcon(R.drawable.ic_view_stream_white_24dp);
             return true;
         }
 
@@ -168,6 +180,16 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
                 return true;
             }
             else if (id == R.id.action_change_view) {
+                if (num % 2 == 0){
+                    recView.setLayoutManager(grid1);
+                    count.setIcon(R.drawable.ic_view_module_white_24dp);
+                    num++;
+                }
+                else if (num % 2 != 0) {
+                    recView.setLayoutManager(grid2);
+                    count.setIcon(R.drawable.ic_view_stream_white_24dp);
+                    num++;
+                }
                 return true;
             }
 
@@ -263,6 +285,10 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         intent.putExtra("name_of_collection", nameofcol);
         intent.putExtra("description_of_collection", desc);
         return intent;
+    }
+
+    public void changeView(){
+
     }
 
 }
