@@ -16,12 +16,10 @@
         app:showAsAction="never"
 
         />
-    <item
-        android:id="@+id/action_change_view"
-        android:icon="@drawable/ic_view_stream_white_24dp"
-        app:showAsAction="always"
-        app:actionViewClass="android.support.v7.widget"
+    <item android:icon="@drawable/ic_info_outline_white_24dp"
+        android:id="@+id/action_info"
         android:title=""
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/action_search"
@@ -31,5 +29,3 @@
         app:showAsAction="always"
         />
 </menu>
-
-

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,8 +43,10 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private ArrayList listData;
     private Toolbar toolbar;
     String getT;
+    String getD;
     FloatingActionButton additem;
     MyDBHandler db;
+    String desc;
     int REQ_CODE_INTENT = 3;
 
     @Override
@@ -54,11 +57,11 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         db = new MyDBHandler(getApplicationContext());
         Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
         getT = getIntent().getStringExtra("name_of_collection");
+        getD = getIntent().getStringExtra("description_of_collection");
 
         int colId = db.getId(getT);
 
         listData = (ArrayList) db.getAllItemsFromCollection(colId);
-
 
         recyclerView = (RecyclerView) findViewById(R.id.rec_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -151,8 +154,8 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+        getMenuInflater().inflate(R.menu.menu_list, menu);
+
         return true;
     }
 
@@ -164,7 +167,13 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_select) {
+        if (id == R.id.action_info) {
+            AlertDialog.Builder infoAlert = new AlertDialog.Builder(ListActivity.this);
+            infoAlert.setTitle(getT + " description");
+            infoAlert.setMessage(getD);
+
+            infoAlert.create();
+            infoAlert.show();
             return true;
         }
 

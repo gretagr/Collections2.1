@@ -1,11 +1,13 @@
 package com.collections2.grigelionyte.greta.collections.ui.main;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,6 +37,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
     private ArrayList cardData;
     MyDBHandler db;
     int colCount;
+    ItemsCollection itemToDelete;
 
 
     @Override
@@ -150,7 +153,6 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.menu_main, menu);
-            getMenuInflater().inflate(R.menu.menu_search, menu);
             return true;
         }
 
@@ -162,7 +164,10 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
             int id = item.getItemId();
 
             //noinspection SimplifiableIfStatement
-            if (id == R.id.action_select) {
+            if (id == R.id.action_search) {
+                return true;
+            }
+            else if (id == R.id.action_change_view) {
                 return true;
             }
 
@@ -173,7 +178,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
     public void onItemClick(int p) {
         ItemsCollection col = (ItemsCollection) cardData.get(p);
 
-        Intent intent = makeIntent(CollectionsActivity.this, col.getColTitle());
+        Intent intent = makeIntent(CollectionsActivity.this, col.getColTitle(), col.getSubTitle());
         startActivity(intent);
     }
 
@@ -194,10 +199,27 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
     }
 
     @Override
-    public void onDeleteClick(int p) {
-        ItemsCollection itemsCollection = (ItemsCollection)cardData.get(p);
-        db.deleteCollection(itemsCollection);
-        adapter.remove(p);
+    public void onDeleteClick(final int p) {
+        itemToDelete = (ItemsCollection)cardData.get(p);
+        AlertDialog.Builder deleteAlert = new AlertDialog.Builder(CollectionsActivity.this);
+        deleteAlert.setMessage("When collection deleted, all items in it will be deleted too.")
+                .setTitle("Delete collection?")
+                .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        db.deleteCollection(itemToDelete);
+                        adapter.remove(p);
+                       // adapter.notifyItemRemoved(p);
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        deleteAlert.create();
+        deleteAlert.show();
     }
 
     private void initCollapsingToolbar() {
@@ -236,9 +258,10 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         View bc = findViewById(R.id.floating_bc);
         bc.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
-    public static Intent makeIntent(Context context, String nameofcol) {
+    public static Intent makeIntent(Context context, String nameofcol, String desc) {
         Intent intent = new Intent(context, ListActivity.class);
         intent.putExtra("name_of_collection", nameofcol);
+        intent.putExtra("description_of_collection", desc);
         return intent;
     }
 
