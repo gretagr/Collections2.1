@@ -116,7 +116,6 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                 } else {
                     Item item = new Item(
-                            db.getItemsCount(),
                             String.valueOf(itemName.getText()),
                             String.valueOf(itemDesc.getText()),
                             imageViewToByte(addImage),

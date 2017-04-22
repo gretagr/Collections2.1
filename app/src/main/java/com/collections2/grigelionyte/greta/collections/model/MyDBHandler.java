@@ -51,7 +51,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_COLLECTIONS + " ( "
-                + COLUMN_ID + " integer primary key,"
+                + COLUMN_ID + " integer primary key autoincrement,"
                 + COLUMN_NAME + " text not null,"
                 + COLUMN_DESCRIPTION +" text not null,"
                 + COLUMN_URI +" blob,"
@@ -59,7 +59,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
                 + COLUMN_FAVORITE + " integer default 0" + ");");
 
         db.execSQL("CREATE TABLE " + TABLE_ITEMS + " ( "
-                + COLUMN_ITEM_ID + " integer primary key,"
+                + COLUMN_ITEM_ID + " integer primary key autoincrement,"
                 + COLUMN_ITEM_NAME + " text not null,"
                 + COLUMN_ITEM_DESCRIPTION +" text not null,"
                 + COLUMN_ITEM_URI +" text,"
@@ -82,7 +82,6 @@ public class MyDBHandler extends SQLiteOpenHelper{
     // ADD VALUES TO COLLECTION TABLE
     public void addCollection(ItemsCollection collection){
         ContentValues valuesCollection = new ContentValues();
-        valuesCollection.put(COLUMN_ID, collection.getCardId());
         valuesCollection.put(COLUMN_NAME, collection.getColTitle());
         valuesCollection.put(COLUMN_DESCRIPTION, collection.getSubTitle());
         valuesCollection.put(COLUMN_URI, collection.getColImage());
@@ -94,7 +93,6 @@ public class MyDBHandler extends SQLiteOpenHelper{
     // ADD VALUES TO ITEM TABLE
     public void addItem(Item item){
         ContentValues valuesItem = new ContentValues();
-        valuesItem.put(COLUMN_ITEM_ID, item.getId());
         valuesItem.put(COLUMN_ITEM_NAME, item.getTitle());
         valuesItem.put(COLUMN_ITEM_DESCRIPTION, item.getSubTitle());
         valuesItem.put(COLUMN_ITEM_URI, item.getImage());
@@ -125,8 +123,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                ItemsCollection collection = new ItemsCollection(
-                        Integer.parseInt(cursor.getString(0)),
+                ItemsCollection collection = new ItemsCollection(Integer.parseInt(cursor.getString(0)),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getBlob(3),
@@ -151,8 +148,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                Item item = new Item(
-                        Integer.parseInt(cursor.getString(0)),
+                Item item = new Item(Integer.parseInt(cursor.getString(0)),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getBlob(3),

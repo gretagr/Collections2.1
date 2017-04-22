@@ -25,7 +25,6 @@ import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivi
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -91,7 +90,6 @@ public class NewCollection extends AppCompatActivity {
                    }
                    else {
                        ItemsCollection collection = new ItemsCollection(
-                               db.getCollectionsCount(),
                                String.valueOf(itemName.getText()),
                                String.valueOf(itemDesc.getText()),
                                imageViewToByte(addImage),
