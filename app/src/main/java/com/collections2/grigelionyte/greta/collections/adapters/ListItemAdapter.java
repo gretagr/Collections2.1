@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,11 +19,14 @@ import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListHolder>{
+public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListHolder> implements Filterable {
 
-    private List <Item> listData;
+    public List <Item> listData;
+    ArrayList<Item> filterListItem;
     private LayoutInflater inflater;
     private ItemClickCallback itemClickCallback;
+    FilterForList filterForList;
+    private Context context;
     MyDBHandler db;
 
 
@@ -39,7 +44,9 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
 
     public ListItemAdapter(List <Item> listData, Context c){
         inflater = LayoutInflater.from(c);
+        this.context = c;
         this.listData = listData;
+        this.filterListItem = (ArrayList<Item>) listData;
         this.db = new MyDBHandler(c);
     }
 
@@ -51,18 +58,17 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
 
     @Override
     public void onBindViewHolder(ListHolder holder, int position) {
-        Item item = listData.get(position);
-        holder.title.setText(item.getTitle());
-        holder.subTitle.setText(item.getSubTitle());
-        byte[] image = item.getImage();
+        holder.title.setText(listData.get(position).getTitle());
+        holder.subTitle.setText(listData.get(position).getSubTitle());
+        byte[] image = listData.get(position).getImage();
         Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
         holder.thumbnail.setImageBitmap(bitmap);
         holder.edit.setImageResource(R.drawable.ic_mode_edit_black_18dp);
 
-        if (item.getFavorite() == 1) {
+        if (listData.get(position).getFavorite() == 1) {
             holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_black_18dp);
         }
-        else if (item.getFavorite() == 0){
+        else if (listData.get(position).getFavorite() == 0){
         holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_border_black_18dp);
         }
     }
@@ -71,7 +77,14 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         db.deleteItem(item);
         listData.remove(position);
         notifyItemRemoved(position);
+    }@Override
+    public Filter getFilter(){
+        if (filterForList == null){
+            filterForList = new FilterForList(filterListItem, this);
+        }
+        return filterForList;
     }
+
     @Override
     public int getItemCount() {
         return listData.size();

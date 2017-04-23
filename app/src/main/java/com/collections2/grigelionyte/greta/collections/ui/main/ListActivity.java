@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
@@ -20,14 +21,13 @@ import android.widget.Toast;
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.adapters.ListItemAdapter;
 import com.collections2.grigelionyte.greta.collections.adapters.ListTouchHelper;
-import com.collections2.grigelionyte.greta.collections.model.Item;
 import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
 import com.collections2.grigelionyte.greta.collections.ui.addEdit.UpdateItem;
 
 import java.util.ArrayList;
 
-public class ListActivity extends AppCompatActivity implements ListItemAdapter.ItemClickCallback {
+public class ListActivity extends AppCompatActivity implements ListItemAdapter.ItemClickCallback, SearchView.OnQueryTextListener {
     private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
     private static final String EXTRA_QUOTE = "EXTRA_QUOTE";
     private static final String EXTRA_ATTR = "EXTRA_ATTR";
@@ -35,9 +35,6 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     private static final String EXTRA_CAT1 = "EXTRA_CAT1";
     private static final String EXTRA_CAT2 = "EXTRA_CAT2";
     private static final String EXTRA_ID = "EXTRA_ID";
-    String COLLECTION_NAME_EXTRA = "COLLECTION_NAME_EXTRA";
-    String IMAGE_EXTRA = "IMAGE_EXTRA";
-    String EXTRA_FOR_NEW = "EXTRA_FOR_NEW";
     private RecyclerView recyclerView;
     private ListItemAdapter adapter;
     private ArrayList listData;
@@ -46,7 +43,6 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     String getD;
     FloatingActionButton additem;
     MyDBHandler db;
-    String desc;
     int REQ_CODE_INTENT = 3;
 
     @Override
@@ -101,17 +97,17 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
 
     @Override
     public void onItemClick(int p) {
-        Item item = (Item) listData.get(p);
+
         Intent i = new Intent(this, DetailActivity.class);
-        String tempT = item.getTitle();
+        String tempT = adapter.listData.get(p).getTitle();
         int id = db.getCollectionIdByName(tempT);
         String collectionName = db.getColName(id);
         Bundle extras = new Bundle();
-        extras.putString(EXTRA_QUOTE, item.getTitle());
-        extras.putString(EXTRA_ATTR, item.getSubTitle());
-        extras.putByteArray(EXTRA_ARR, item.getImage());
-        extras.putString(EXTRA_CAT1, item.getCategories());
-        extras.putString(EXTRA_CAT2, item.getItemCat());
+        extras.putString(EXTRA_QUOTE, adapter.listData.get(p).getTitle());
+        extras.putString(EXTRA_ATTR, adapter.listData.get(p).getSubTitle());
+        extras.putByteArray(EXTRA_ARR, adapter.listData.get(p).getImage());
+        extras.putString(EXTRA_CAT1, adapter.listData.get(p).getCategories());
+        extras.putString(EXTRA_CAT2, adapter.listData.get(p).getItemCat());
         extras.putString(EXTRA_ID, getT);
 
         i.putExtra(BUNDLE_EXTRAS, extras);
@@ -121,15 +117,15 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
 
     @Override
     public void onSecondaryIconClick(int p) {
-        Item item = (Item) listData.get(p);
+        //Item item = (Item) listData.get(p);
 
-        if (item.getFavorite() == 1) {
-           item.setFavorite(0);
-            db.setNotFavorite(item);
+        if (adapter.listData.get(p).getFavorite() == 1) {
+            adapter.listData.get(p).setFavorite(0);
+            db.setNotFavorite(adapter.listData.get(p));
 
         } else  {
-            item.setFavorite(1);
-            db.setFavoriteItem(item);
+            adapter.listData.get(p).setFavorite(1);
+            db.setFavoriteItem(adapter.listData.get(p));
 
        }
         adapter.notifyDataSetChanged();
@@ -137,14 +133,14 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
 
     @Override
     public void onEditClick(int p) {
-        Item itemToTransfer = (Item) listData.get(p);
+        //Item itemToTransfer = (Item) listData.get(p);
         Intent intentEdit = new Intent(this, UpdateItem.class);
         Bundle extras = new Bundle();
-        extras.putString(EXTRA_QUOTE, itemToTransfer.getTitle());
-        extras.putString(EXTRA_ATTR, itemToTransfer.getSubTitle());
-        extras.putByteArray(EXTRA_ARR, itemToTransfer.getImage());
-        extras.putString(EXTRA_CAT1, itemToTransfer.getCategories());
-        extras.putString(EXTRA_CAT2, itemToTransfer.getItemCat());
+        extras.putString(EXTRA_QUOTE, adapter.listData.get(p).getTitle());
+        extras.putString(EXTRA_ATTR, adapter.listData.get(p).getSubTitle());
+        extras.putByteArray(EXTRA_ARR, adapter.listData.get(p).getImage());
+        extras.putString(EXTRA_CAT1, adapter.listData.get(p).getCategories());
+        extras.putString(EXTRA_CAT2, adapter.listData.get(p).getItemCat());
         extras.putString(EXTRA_ID, getT);
         intentEdit.putExtra(BUNDLE_EXTRAS, extras);
 
@@ -169,7 +165,7 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_info) {
             AlertDialog.Builder infoAlert = new AlertDialog.Builder(ListActivity.this);
-            infoAlert.setTitle(getT + " description");
+            infoAlert.setTitle("About " + getT);
             infoAlert.setMessage(getD);
 
             infoAlert.create();
@@ -215,4 +211,15 @@ public class ListActivity extends AppCompatActivity implements ListItemAdapter.I
     }
 
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.getFilter().filter(newText);
+        return false;
+    }
 }

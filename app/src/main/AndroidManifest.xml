@@ -39,13 +39,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.CollectionsActivity">
+
+
+        <activity android:name=".ui.main.CollectionsActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.SEARCH"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
+
+
         <activity
             android:name=".ui.addEdit.NewCollection"
             android:parentActivityName=".ui.main.CollectionsActivity"
@@ -54,22 +62,33 @@
         </activity>
         <activity
             android:name=".ui.addEdit.NewItem"
-            android:parentActivityName=".ui.main.CollectionsActivity"
+            android:parentActivityName=".ui.main.ListActivity"
             android:screenOrientation="portrait">
 
         </activity>
+
+
         <activity
             android:name=".ui.main.ListActivity"
-            android:parentActivityName=".ui.main.CollectionsActivity">
-
+            android:parentActivityName=".ui.main.CollectionsActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/search_lists"/>
         </activity>
+
+
         <activity
             android:name=".ui.main.DetailActivity"
+            android:parentActivityName=".ui.main.ListActivity"
             android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".ui.addEdit.UpdateItem">
-
+        <activity android:name=".ui.addEdit.UpdateItem"
+            android:parentActivityName=".ui.main.ListActivity">
         </activity>
     </application>
 

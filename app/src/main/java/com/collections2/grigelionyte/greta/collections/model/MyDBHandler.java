@@ -137,6 +137,27 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         return collections;
     }
+    public List<ItemsCollection> getCollectionsByKeyword(String search) {
+        List<ItemsCollection> collections = new ArrayList<ItemsCollection>();
+        String getAll = "SELECT * FROM " + TABLE_ITEMS + " WHERE " + COLUMN_NAME + " = " + search;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(getAll, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                ItemsCollection item = new ItemsCollection(Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getBlob(3),
+                        cursor.getString(4),
+                        Integer.parseInt(cursor.getString(5)));
+                collections.add(item);
+            } while (cursor.moveToNext());
+        }
+
+        return collections;
+    }
 
 
     public  List<Item> getAllItems(){

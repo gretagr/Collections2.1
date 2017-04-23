@@ -1,5 +1,6 @@
 package com.collections2.grigelionyte.greta.collections.ui.main;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,12 +32,12 @@ import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
 
 import java.util.ArrayList;
 
-public class CollectionsActivity extends AppCompatActivity implements CardAdapter.ItemClickCallback{
+public class CollectionsActivity extends AppCompatActivity implements CardAdapter.ItemClickCallback, SearchView.OnQueryTextListener {
 
     private Toolbar toolbar;
     private RecyclerView recView;
     private CardAdapter adapter;
-    private ArrayList cardData;
+    private ArrayList<ItemsCollection>cardData;
     MyDBHandler db;
     int colCount;
     MenuItem count;
@@ -57,17 +59,22 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         initCollapsingToolbar();
+
+
         // SETTING CARD VIEW ----------------------------------------------------------------------------------------------------------------------
         cardData = (ArrayList) db.getAllCollections();
         grid1 = new GridLayoutManager(this, 1);
         grid2 = new GridLayoutManager(this, 2);
+
         recView = (RecyclerView)findViewById(R.id.rec_list);
         recView.setItemAnimator(new DefaultItemAnimator());
         recView.setLayoutManager(grid2);
 
 
-        adapter = new CardAdapter(cardData, this);
+       adapter = new CardAdapter(cardData, this);
+
         recView.setAdapter(adapter);
         adapter.setItemClickCallback(this);
 
@@ -161,10 +168,16 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
+
             getMenuInflater().inflate(R.menu.menu_main, menu);
             count = menu.findItem(R.id.action_change_view);
             MenuItemCompat.getActionView(count);
             count.setIcon(R.drawable.ic_view_stream_white_24dp);
+            MenuItem search = menu.findItem(R.id.action_search);
+            SearchManager manager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+            searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+            searchView.setOnQueryTextListener(this);
             return true;
         }
 
@@ -177,6 +190,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
 
             //noinspection SimplifiableIfStatement
             if (id == R.id.action_search) {
+
                 return true;
             }
             else if (id == R.id.action_change_view) {
@@ -198,9 +212,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
 
     @Override
     public void onItemClick(int p) {
-        ItemsCollection col = (ItemsCollection) cardData.get(p);
-
-        Intent intent = makeIntent(CollectionsActivity.this, col.getColTitle(), col.getSubTitle());
+        Intent intent = makeIntent(CollectionsActivity.this, adapter.cardData.get(p).getColTitle(), adapter.cardData.get(p).getSubTitle());
         startActivity(intent);
     }
 
@@ -287,8 +299,15 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         return intent;
     }
 
-    public void changeView(){
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.getFilter().filter(newText);
+        return false;
+    }
 }
