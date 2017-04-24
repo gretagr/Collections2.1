@@ -12,14 +12,14 @@ import java.util.List;
 
 public class MyDBHandler extends SQLiteOpenHelper{
 
-    // DB INFO
+    //--------------------------------------------------------------------------------------------------------------------------- VARIABLES
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "collections.db";
 
 
 
 
-    // COLLECTIONS TABLE AND COLUMNS
+    //----------------------------------------------------------------------------------------------------------------- for collections table
 
     private static final String TABLE_COLLECTIONS = "collections",
                         COLUMN_ID = "_id",
@@ -29,7 +29,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
                         COLUMN_CATEGORIES = "categories",
                         COLUMN_FAVORITE = "favorite";
 
-    // ITEM TABLE AND COLUMNS
+    //----------------------------------------------------------------------------------------------------------------------- for items table
     private static final String TABLE_ITEMS = "items",
                         COLUMN_ITEM_ID = "_id",
                         COLUMN_ITEM_NAME = "name",
@@ -39,7 +39,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
                         COLUMN_ITEM_CATEGORIES_TEXT = "categories_text",
                         COLUMN_ITEM_FAVORITE = "favorite",
                         COLUMN_ITEM_COLLECTION_ID = "collection_id";
-
+    //----------------------------------------------------------------------------------------------------------------------------- db handler
     public MyDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = this.getWritableDatabase();
@@ -47,7 +47,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     }
 
 
-    // CREATE TABLES
+    //--------------------------------------------------------------------------------------------------------------------------- create tables
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_COLLECTIONS + " ( "
@@ -70,7 +70,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     }
 
 
-    // UPDATE DB
+    //--------------------------------------------------------------------------------------------------------------------------------- upgrade db
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COLLECTIONS);
@@ -79,7 +79,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     }
 
 
-    // ADD VALUES TO COLLECTION TABLE
+    //--------------------------------------------------------------------------------------------------------- add collection to table collections
     public void addCollection(ItemsCollection collection){
         ContentValues valuesCollection = new ContentValues();
         valuesCollection.put(COLUMN_NAME, collection.getColTitle());
@@ -90,7 +90,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         db.insert(TABLE_COLLECTIONS, null, valuesCollection);
         db.close();
     }
-    // ADD VALUES TO ITEM TABLE
+    //--------------------------------------------------------------------------------------------------------------------- add Item to table items
     public void addItem(Item item){
         ContentValues valuesItem = new ContentValues();
         valuesItem.put(COLUMN_ITEM_NAME, item.getTitle());
@@ -103,7 +103,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         db.insert(TABLE_ITEMS, null, valuesItem);
         db.close();
     }
-    // delete values--------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------ delete collection / item
     public int deleteCollection(ItemsCollection collection) {
         SQLiteDatabase db = getWritableDatabase();
         int dbDeleted = db.delete(TABLE_COLLECTIONS, COLUMN_ID + "=?", new String[]{String.valueOf(collection.getCardId())});
@@ -115,50 +115,8 @@ public class MyDBHandler extends SQLiteOpenHelper{
         return  db.delete(TABLE_ITEMS, COLUMN_ITEM_ID  + "=?", new String[]{String.valueOf(item.getId())} );
 
     }
-    public  List<ItemsCollection> getAllCollections(){
-        List<ItemsCollection> collections = new ArrayList<ItemsCollection>();
-        String getAll = "SELECT * FROM " + TABLE_COLLECTIONS;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(getAll, null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                ItemsCollection collection = new ItemsCollection(Integer.parseInt(cursor.getString(0)),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getBlob(3),
-                        cursor.getString(4),
-                        Integer.parseInt(cursor.getString(5)));
-
-                collections.add(collection);
-
-            } while (cursor.moveToNext());
-        }
-
-        return collections;
-    }
-    public List<ItemsCollection> getCollectionsByKeyword(String search) {
-        List<ItemsCollection> collections = new ArrayList<ItemsCollection>();
-        String getAll = "SELECT * FROM " + TABLE_ITEMS + " WHERE " + COLUMN_NAME + " = " + search;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(getAll, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                ItemsCollection item = new ItemsCollection(Integer.parseInt(cursor.getString(0)),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getBlob(3),
-                        cursor.getString(4),
-                        Integer.parseInt(cursor.getString(5)));
-                collections.add(item);
-            } while (cursor.moveToNext());
-        }
-
-        return collections;
-    }
-
+    //--------------------------------------------------------------------------------------------------------------------------- get list values
 
     public  List<Item> getAllItems(){
         List<Item> items = new ArrayList<Item>();
@@ -183,7 +141,30 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         return items;
     }
-    //in cursor--------------------------------------------------------
+
+    public  List<ItemsCollection> getAllCollections(){
+        List<ItemsCollection> collections = new ArrayList<ItemsCollection>();
+        String getAll = "SELECT * FROM " + TABLE_COLLECTIONS;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(getAll, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                ItemsCollection collection = new ItemsCollection(Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getBlob(3),
+                        cursor.getString(4),
+                        Integer.parseInt(cursor.getString(5)));
+
+                collections.add(collection);
+
+            } while (cursor.moveToNext());
+        }
+
+        return collections;
+    }
+    //-------------------------------------------------------------------------------------------------------------------------- get cursor values
 
     public Cursor getAllValues() {
         SQLiteDatabase db = getWritableDatabase();
@@ -205,7 +186,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
                 COLUMN_ITEM_FAVORITE};
         return  db.query(TABLE_ITEMS, columns, null, null, null, null, null);
     }
-
+    //--------------------------------------------------------------------------------------------- get collection desc by name (for info button)
     public String getCollectionDescByName(String name) {
         SQLiteDatabase db = getWritableDatabase();
         String desc = "";
@@ -220,21 +201,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         return desc;
     }
-   /* public int getCollectionIdByName(String name) {
-        SQLiteDatabase db = getWritableDatabase();
-        int id = 0;
-        String[] columns = {COLUMN_ITEM_COLLECTION_ID, COLUMN_NAME};
-
-        Cursor cursor = db.query(TABLE_ITEMS, columns, COLUMN_NAME + " = '" + name + "'", null, null, null, null);
-
-        while (cursor.moveToNext()) {
-            int index = cursor.getColumnIndex(COLUMN_ITEM_COLLECTION_ID);
-
-            id = cursor.getInt(index);
-        }
-        return id;
-    }*/
-
+   //------------------------------------------------------------------------------------------------------------------ get collection id by name
     public int getId(String name) {
         SQLiteDatabase db = getWritableDatabase();
         int id = 0;
@@ -246,7 +213,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         return id;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------- get item id by name
     public int getItemIdByName(String name){
         SQLiteDatabase db = getWritableDatabase();
         int id = 0;
@@ -259,7 +226,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         return id;
     }
-
+    //--------------------------------------------------------------------------------------------------------------------- get categories by name
     public String getCategories(String name){
         SQLiteDatabase db = getWritableDatabase();
         String string = "";
@@ -271,19 +238,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         return string;
     }
-
-    public String getColName(int id){
-        SQLiteDatabase db = getWritableDatabase();
-        String nameOfCol = "";
-        String[] columns = {COLUMN_NAME, COLUMN_ID};
-        Cursor cursor = db.query(TABLE_COLLECTIONS, columns, COLUMN_NAME + " = '"+ id + "'", null, null, null, null );
-        while (cursor.moveToNext()) {
-            int index = cursor.getColumnIndex(COLUMN_ID);
-            nameOfCol = cursor.getString(index);
-        }
-        return nameOfCol;
-    }
-
+    //----------------------------------------------------------------------------------------------------- all items of specific collection by id
     public  List<Item> getAllItemsFromCollection(int id){
         List<Item> items = new ArrayList<Item>();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -306,7 +261,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         return items;
     }
-    // FAVORITES------------------------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------------------------- setting item favorites
     public int setFavoriteItem(Item item){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -332,7 +287,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         return res;
     }
-
+    //------------------------------------------------------------------------------------------------------------- setting collection favorites
     public int setFavoriteCol(ItemsCollection itemsCollection){
         SQLiteDatabase db = this.getWritableDatabase();
         String name = itemsCollection.getColTitle();
@@ -360,7 +315,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         return res;
     }
-
+    //---------------------------------------------------------------------------------------------------------------------------- get item by id
     public Item getItem(int id){
         SQLiteDatabase db = getReadableDatabase();
 
@@ -390,7 +345,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         return item;
 
     }
-    // FAVORITES END ---------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------- update item
     public int updateItem(Item item){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -400,7 +355,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         contentValues.put(COLUMN_ITEM_CATEGORIES_TEXT, item.getItemCat());
         return db.update(TABLE_ITEMS, contentValues, COLUMN_ITEM_ID + "=?", new String[] {String.valueOf(item.getId())});
     }
-
+    //---------------------------------------------------------------------------------------------------------------------- get collections count
     public int getCollectionsCount(){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM "  + TABLE_COLLECTIONS, null);
@@ -413,7 +368,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         else
             return 0;
     }
-
+    //---------------------------------------------------------------------------------------------------------------------------- get items Count
     public int getItemsCount(){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM "  + TABLE_ITEMS, null);

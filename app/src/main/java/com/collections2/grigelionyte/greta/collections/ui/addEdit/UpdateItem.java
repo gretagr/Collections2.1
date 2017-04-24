@@ -62,7 +62,7 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
     List<EditText> allEditText = new ArrayList<EditText>();
     Item item;
 
-
+    //------------------------------------------------------------------------------------------------- variables for extras
     private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
     private static final String EXTRA_QUOTE = "EXTRA_QUOTE";
     private static final String EXTRA_ATTR = "EXTRA_ATTR";
@@ -70,6 +70,7 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
     private static final String EXTRA_CAT1 = "EXTRA_CAT1";
     private static final String EXTRA_CAT2 = "EXTRA_CAT2";
     private static final String EXTRA_ID = "EXTRA_ID";
+    //------------------------------------------------------------------------------- other variables (item id, photo holders)
     int itemId;
     byte[] standartCheck;
     byte[] setNoPhoto;
@@ -78,10 +79,8 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
+        //-------------------------------------------------------------------------------------------------------- get extras
         Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
-        db = new MyDBHandler(getApplicationContext());
-
-
         byte[] img = extras.getByteArray(EXTRA_ARR);
         image = BitmapFactory.decodeByteArray(img, 0, img.length);
         desc = extras.getString(EXTRA_ATTR);
@@ -89,13 +88,15 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         catNames = extras.getString(EXTRA_CAT1);
         catDetails = extras.getString(EXTRA_CAT2);
         collName = extras.getString(EXTRA_ID);
-
+        //------------------------------------------------------------------------------------------------------------ get db
+        db = new MyDBHandler(getApplicationContext());
+        //------------------------------------------------------------------------------------------- spinner, spinner adapter
         spinner = (Spinner) findViewById(R.id.spinner_collections);
         spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, names);
-
+        //----------------------------------------------------------------------------------------------------------- get item
         itemId = db.getItemIdByName(title);
         item = db.getItem(itemId);
-
+        //-------------------------------- split categories string if not null to array and create textviews editTexts for them
         if (catNames != null && catDetails != null) {
             String str[] = catNames.split(", ");
             str = correct(str);
@@ -143,7 +144,7 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         itemD.setText(desc);
         itemTitle.setText(title);
 
-
+        //--------------------------------------------------------------------------------------------------- CANCEL BUTTON
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,22 +153,22 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                 finish();
             }
         });
-//add img to byte
+        //------------------------------------------------------------------------------------ image from image view to byte
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pink_add_photo);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         standartCheck = stream.toByteArray();
-// color to byte
+        //--------------------------------------------------------------------- preferred image if photo not captured to byte
         Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.color_middle_blue);
         ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
         bitmap1.compress(Bitmap.CompressFormat.PNG, 100, stream1);
         setNoPhoto = stream1.toByteArray();
-
+        //------------------------------------------------------------------------------------------------------- SAVE BUTTON
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //-------------------------------------------------------------------if categories not null !! to avoid ( [] )
                if(catNames != null) {
-
                     int size = allEditText.size();
                     String[] strings = new String[size];
                     for (int j = 0; j < size; j++) {
@@ -181,11 +182,13 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                 else {
                     catResult = null;
                 }
+                //-----------------------------------------------------------------------check if name and description filled
                 if (itemName.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not updated You must enter the name.", Toast.LENGTH_SHORT).show();
                 } else if (itemDesc.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not updated You must enter the description.", Toast.LENGTH_SHORT).show();
                 }
+                //----------------------------------------------------------------adding this to db if user did not added img
                 else if (Arrays.equals(imageViewToByte(addImage), standartCheck)){
                     item.setTitle(itemTitle.getText().toString());
                     item.setSubTitle(itemD.getText().toString());
@@ -195,12 +198,14 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                     Toast.makeText(getApplicationContext(), "item updated" + item.getId(), Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "item updated", Toast.LENGTH_SHORT).show();
                     spAdapter.notifyDataSetChanged();
+                    //--------------------------------------------------------------------- start new listActivity with changes
                     Intent intent = makeIntent(UpdateItem.this, collName);
                     startActivity(intent);
                     finish();
                 }
 
                 else {
+                    //-----------------------------------------------------------------------add this to db if user added photo
                     item.setTitle(itemTitle.getText().toString());
                     item.setSubTitle(itemD.getText().toString());
                     item.setItemCatText(catResult);
@@ -209,19 +214,17 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                     Toast.makeText(getApplicationContext(), "item updated" + item.getId(), Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "item updated", Toast.LENGTH_SHORT).show();
                     spAdapter.notifyDataSetChanged();
+                    //---------------------------------------------------------------------- start new listActivity with changes
                     Intent intent = makeIntent(UpdateItem.this, collName);
                     startActivity(intent);
                     finish();
-
-
-
                 }
-
             }
         });
+        //---------------------------------------------------------------------------- call method for spinner to shoe coll names
         populateColNames();
-
     }
+    //------------------------------------------------------------------------------------- method for spinner to shoe coll names
     public void populateColNames() {
         Cursor cursor = db.getAllValues();
 
@@ -232,7 +235,7 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         spinner.setAdapter(spAdapter);
         spinner.setSelection(spAdapter.getPosition(collName));
     }
-
+    //-------------------------------------------------------------------------------------------------- method for taking photo
     public void launchCamera(View view) throws IOException {
         Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Calendar cal = Calendar.getInstance();
@@ -242,9 +245,7 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
         startActivityForResult(camera, REQUEST_TAKE_PHOTO);
     }
-
-
-
+    //----------------------------------------------------------------------------------------- what to do wit image capture result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
@@ -254,7 +255,7 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
             addImage.setImageBitmap(photo);
         }
     }
-
+    //--------------------------------------------------------------------------------------------------- convert imageView to byte[]
     private byte[] imageViewToByte(ImageView image) {
         Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -262,7 +263,7 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         byte[] byteArray = stream.toByteArray();
         return byteArray;
     }
-
+    //--------------------------------------------------------------------------------------------------- fix [] in categories arrays
     public String[] correct(String[] categoriesList) {
         int length = categoriesList.length;
         String str1 = categoriesList[0];
@@ -274,22 +275,24 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         categoriesList[length - 1] = str2;
         return categoriesList;
     }
+    //---------------------------------------------------------------------------------------------------------------- on back pressed
     @Override
     public void onBackPressed(){
         Intent intent = makeIntent(UpdateItem.this, collName);
         startActivity(intent);
         finish();
     }
-
+    //-------------------------------------------------------------------------------------------------- what to do with selected item
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
     }
-
+    //--------------------------------------------------------------------------------------- what to do if nothing in spinner selected
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+    //---------------------------------------------------------------------------------------------- method for intent to list activity
     public static Intent makeIntent(Context context, String nameofcol) {
         Intent intent = new Intent(context, ListActivity.class);
         intent.putExtra("name_of_collection", nameofcol);

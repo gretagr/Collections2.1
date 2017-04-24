@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListHolder> implements Filterable {
-
+    //------------------------------------------------------------------------------------------------------------------------------ variables
     public List <Item> listData;
     ArrayList<Item> filterListItem;
     private LayoutInflater inflater;
@@ -30,7 +30,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
     MyDBHandler db;
 
 
-
+    //------------------------------------------------------------------------------------------------------------------- interface for clicks
     public interface ItemClickCallback {
         void onItemClick(int p);
         void onSecondaryIconClick(int p);
@@ -41,7 +41,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
     public void setItemClickCallback(final ItemClickCallback itemClickCallback) {
         this.itemClickCallback = itemClickCallback;
     }
-
+    //---------------------------------------------------------------------------------------------------------------------------- constructor
     public ListItemAdapter(List <Item> listData, Context c){
         inflater = LayoutInflater.from(c);
         this.context = c;
@@ -55,7 +55,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         View view = inflater.inflate(R.layout.list_item, parent, false);
         return new ListHolder(view);
     }
-
+    //-------------------------------------------------------------------------------------------------------------- initialize listView holder
     @Override
     public void onBindViewHolder(ListHolder holder, int position) {
         holder.title.setText(listData.get(position).getTitle());
@@ -64,7 +64,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
         Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
         holder.thumbnail.setImageBitmap(bitmap);
         holder.edit.setImageResource(R.drawable.ic_mode_edit_black_18dp);
-
+        //--------------------------------------------------------------------------------------------------------------------- handle favorites
         if (listData.get(position).getFavorite() == 1) {
             holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_black_18dp);
         }
@@ -72,24 +72,27 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
             holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_border_black_18dp);
         }
     }
+    //----------------------------------------------------------------------------------------------------------------------------- remove items!
     public void remove(int position) {
         Item item = listData.get(position);
         db.deleteItem(item);
         listData.remove(position);
         notifyItemRemoved(position);
-    }@Override
+    }
+    //-------------------------------------------------------------------------------------------------------------------------- filter for search
+    @Override
     public Filter getFilter(){
         if (filterForList == null){
             filterForList = new FilterForList(filterListItem, this);
         }
         return filterForList;
     }
-
+    //---------------------------------------------------------------------------------------------------------------------------- get items count
     @Override
     public int getItemCount() {
         return listData.size();
     }
-
+    //------------------------------------------------------------------------------------------------- handling clicks and positions of list items
     class ListHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView thumbnail;

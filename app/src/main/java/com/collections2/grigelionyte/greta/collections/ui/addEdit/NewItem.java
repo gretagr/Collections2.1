@@ -64,27 +64,23 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
+        //--------------------------------------------------------------------------------------------------------------------- get extras
         Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
         colTitle = getIntent().getStringExtra("name_of_collection_to_send");
-
+        //--------------------------------------------------------------------------------------------------------------------- find views
         linearLayout = (LinearLayout) findViewById(R.id.linear);
         itemDesc = (EditText) findViewById(R.id.itemDesc);
         itemName = (EditText) findViewById(R.id.itemName);
         spinner = (Spinner) findViewById(R.id.spinner_collections);
         categoriesView = (TextView)findViewById(R.id.textView3);
-        // colNme = spinner.getSelectedItem().toString();
-
+        //------------------------------------------------------------------------------------------------------------------------- get db
         db = new MyDBHandler(getApplicationContext());
-
+        //--------------------------------------------------------------------------------------------------------------------- find views
         spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, names);
-
         save = (Button) findViewById(R.id.save);
-
         cancel = (Button) findViewById(R.id.cancel);
-
         addImage = (ImageView) findViewById(R.id.addImage);
-
-
+        //------------------------------------------------------------------------------------------------------------------ CANCEL BUTTON
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,21 +89,23 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                 finish();
             }
         });
+        //----------------------------------------------------------------------------------------------- look for selected item in spinner
         spinner.setOnItemSelectedListener(this);
-        //add img to byte
+        //--------------------------------------------------------------------------------------------------- image from image view to byte
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pink_add_photo);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         standartCheck = stream.toByteArray();
-// color to byte
+        //------------------------------------------------------------------------------------ preferred image if photo not captured to byte
         Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.color_middle_blue);
         ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
         bitmap1.compress(Bitmap.CompressFormat.PNG, 100, stream1);
         setNoPhoto = stream1.toByteArray();
-
+        //---------------------------------------------------------------------------------------------------------------------- SAVE BUTTON
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //---------------------------------------------------------------------------------if categories not null !! to avoid ( [] )
                 if(categories != null) {
                     int size = allEditText.size();
                     String[] strings = new String[size];
@@ -122,14 +120,15 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                 else {
                     catResult = null;
                 }
-
-                Toast.makeText(getApplicationContext(), "catresult = " + catResult, Toast.LENGTH_LONG).show();
+                //-------------------------------------------------------------------------------------------get collection name from spinner
                 String text = spinner.getSelectedItem().toString();
+                //---------------------------------------------------------------------------------------check if name and description filled
                 if (itemName.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the name.", Toast.LENGTH_SHORT).show();
                 } else if (itemDesc.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Item not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                 }
+                //--------------------------------------------------------------------------------adding this to db if user did not added img
                 else if (Arrays.equals(imageViewToByte(addImage), standartCheck)){
                     Item item = new Item(
                             String.valueOf(itemName.getText()),
@@ -140,12 +139,13 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                             db.getId(text), 0);
 
                     db.addItem(item);
-
                     Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
+                    //--------------------------------------------------------------------------------- start new listActivity with changes
                     Intent intent = makeIntent(NewItem.this, text);
                     startActivity(intent);
                     finish();
                 }
+                //----------------------------------------------------------------------------------------add this to db if user added photo
                 else {
                     Item item = new Item(
                             String.valueOf(itemName.getText()),
@@ -156,9 +156,8 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                             db.getId(text), 0);
 
                     db.addItem(item);
-
                     Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
-
+                    //--------------------------------------------------------------------------------- start new listActivity with changes
                     Intent intent = makeIntent(NewItem.this, text);
                     startActivity(intent);
                     finish();
@@ -166,12 +165,12 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
 
             }
         });
-
+        //--------------------------------------------------------------------------------------- call method for spinner to shoe coll names
         populateColNames();
 
 
     }
-
+    //-------------------------------------------------------------------------------------------------------------- method for taking photo
     public void launchCamera(View view) throws IOException {
         Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Calendar cal = Calendar.getInstance();
@@ -183,7 +182,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
 
-
+    //---------------------------------------------------------------------------------------------------- what to do wit image capture result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
@@ -192,7 +191,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
             addImage.setImageBitmap(photo);
         }
     }
-
+    //------------------------------------------------------------------------------------------------------------- convert imageView to byte[]
     private byte[] imageViewToByte(ImageView image) {
         Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -200,7 +199,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         byte[] byteArray = stream.toByteArray();
         return byteArray;
     }
-
+    //--------------------------------------------------------------------------------------------------- method for spinner to shoe coll names
     public void populateColNames() {
         Cursor cursor = db.getAllValues();
 
@@ -211,12 +210,12 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         spinner.setAdapter(spAdapter);
         spinner.setSelection(spAdapter.getPosition(colTitle));
     }
-
+    //------------------------------------------------------------------------------------------------ what to do if nothing in spinner selected
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
-
+    //------------------------------------------------------------------------------------------------------------ what to do with selected item
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -248,7 +247,7 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         }
     }
 
-
+    //--------------------------------------------------------------------------------------------------------------- fix [] in categories arrays
     public String[] correct(String[] categoriesList) {
         int length = categoriesList.length;
         String str1 = categoriesList[0];
@@ -261,11 +260,13 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         return categoriesList;
     }
     @Override
+    //--------------------------------------------------------------------------------------------------------------------------- on back pressed
     public void onBackPressed(){
         Intent intent = makeIntent(NewItem.this, spinner.getSelectedItem().toString());
         startActivity(intent);
         finish();
     }
+    //------------------------------------------------------------------------------------------------------- method for intent to list activity
     public static Intent makeIntent(Context context, String nameofcol) {
         Intent intent = new Intent(context, ListActivity.class);
         intent.putExtra("name_of_collection", nameofcol);

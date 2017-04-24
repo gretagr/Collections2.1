@@ -10,7 +10,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
 import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
+    //-------------------------------------------------------------------------- bundle extras
     private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
     private static final String EXTRA_QUOTE = "EXTRA_QUOTE";
     private static final String EXTRA_ATTR = "EXTRA_ATTR";
@@ -31,7 +31,8 @@ public class DetailActivity extends AppCompatActivity {
     private static final String EXTRA_ID_DESC = "EXTRA_ID_DESC";
 
 
-    ArrayAdapter<String> categoriesadapter;
+    //------------------------------------------------------------------------other variables
+
     List<String> categoriesList;
     List<String> categoriesList2;
     private Toolbar toolbar;
@@ -46,24 +47,25 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        //---------------------------------------------------------------------------- get db
         db = new MyDBHandler(getApplicationContext());
-
+        //--------------------------------------------------------- toolbar/collapsing toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initCollapsingToolbar();
+        //--------------------------------------------------------------------- setting layout
         linearLayout = (LinearLayout) findViewById(R.id.list);
         linearLayout.setPadding(0,20,0,0);
+        //------------------------------------------------------------------------- get extras
         Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
         collectionName = extras.getString(EXTRA_ID);
         collectionDescription = extras.getString(EXTRA_ID_DESC);
         name = extras.getString(EXTRA_QUOTE);
         byte[] img = extras.getByteArray(EXTRA_ARR);
         Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-
-
         catNames = extras.getString(EXTRA_CAT1);
         catDetails = extras.getString(EXTRA_CAT2);
-
+        //------------------------------------------ creating views for categories if not null
         if (catNames != null && catDetails != null) {
             String str[] = catNames.split(", ");
             str = correct(str);
@@ -96,7 +98,7 @@ public class DetailActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.lbl_quote_attribution)).setText(extras.getString(EXTRA_ATTR));
         ((ImageView)findViewById(R.id.backdrop)).setImageBitmap(bitmap);
     }
-
+    //----------------------------------------------------- fixing [] in arrays of categories
     public String[] correct(String[] categoriesList) {
         int length = categoriesList.length;
         String str1 = categoriesList[0];
@@ -108,6 +110,7 @@ public class DetailActivity extends AppCompatActivity {
         categoriesList[length - 1] = str2;
         return categoriesList;
     }
+    //---------------------------------------------------------------------- collapsing toolbar
     private void initCollapsingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -115,7 +118,7 @@ public class DetailActivity extends AppCompatActivity {
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
 
-        // hiding & showing the title when toolbar expanded & collapsed
+        //----------------------------------------------- showing and hiding collapsing toolbar
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -137,12 +140,14 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
+    //-------------------------------------------------------------------------- on back pressed
     @Override
     public void onBackPressed(){
         Intent intent = makeIntent(DetailActivity.this, collectionName, collectionDescription);
         startActivity(intent);
         finish();
     }
+    //--------------------------------------------------------- method for starting listActivity
     public static Intent makeIntent(Context context, String nameofcol, String desc) {
         Intent intent = new Intent(context, ListActivity.class);
         intent.putExtra("name_of_collection", nameofcol);

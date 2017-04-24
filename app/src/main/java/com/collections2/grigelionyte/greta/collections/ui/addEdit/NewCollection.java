@@ -53,27 +53,28 @@ public class NewCollection extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_collection);
-
+        //------------------------------------------------------------------------------------------------------------------------- get db
         db = new MyDBHandler(this);
+        //--------------------------------------------------------------------------------------------------------------------- find views
         addCategoryField = (EditText) findViewById(R.id.editText);
         addCategoyBtn = (Button) findViewById(R.id.button_addData);
         categoriesListview = (ListView) findViewById(R.id.listView_lv);
         addImage = (ImageView) findViewById(R.id.addColImg);
-
+        //-------------------------------------------------------------------------------------------------------------------- set adapters
         categoriesList = new ArrayList<String>();
         categoriesadapter = new ArrayAdapter<String>(NewCollection.this, android.R.layout.simple_list_item_1, categoriesList);
         categoriesListview.setAdapter(categoriesadapter);
-//add img to byte
+        //--------------------------------------------------------------------------------------------------- image from image view to byte
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pink_add_photo);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         standartCheck = stream.toByteArray();
-// color to byte
+        //------------------------------------------------------------------------------------ preferred image if photo not captured to byte
         Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.color_middle_blue);
         ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
         bitmap1.compress(Bitmap.CompressFormat.PNG, 100, stream1);
         setNoPhoto = stream1.toByteArray();
-
+        //------------------------------------------------------------------------------------------------------------------ CANCEL BUTTON
         cancel = (Button) findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,13 +84,15 @@ public class NewCollection extends AppCompatActivity {
                 finish();
             }
         });
+        //--------------------------------------------------------------------------------------------------------------------- find views
         itemDesc = (EditText)findViewById(R.id.colDesc);
         itemName = (EditText)findViewById(R.id.colName);
+        //---------------------------------------------------------------------------------------------------------------------- SAVE BUTTON
         save = (Button) findViewById(R.id.save);
-
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //----------------------------------------------------------------------------------------------------------- get categories
                 catList = categoriesList.toString();
                 if (categoriesList.toString() == "[]") {
                     catList = null;
@@ -97,11 +100,13 @@ public class NewCollection extends AppCompatActivity {
                 else{
                     catList = categoriesList.toString();
                 }
+                //---------------------------------------------------------------------------------------check if name and description filled
                 if (itemName.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Collection not created. You must enter the name.", Toast.LENGTH_SHORT).show();
                 } else if (itemDesc.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Collection not created. You must enter the description.", Toast.LENGTH_SHORT).show();
                 }
+                //--------------------------------------------------------------------------------adding this to db if user did not added img
                 else if (Arrays.equals(imageViewToByte(addImage), standartCheck)){
                     ItemsCollection collection = new ItemsCollection(
                             String.valueOf(itemName.getText()),
@@ -109,14 +114,13 @@ public class NewCollection extends AppCompatActivity {
                             setNoPhoto,
                             catList, 0);
                     db.addCollection(collection);
-
                     Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
-
+                    //--------------------------------------------------------------------------- start new collections activity with changes
                     Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
-
                     startActivity(home);
                     finish();
                 }
+                //----------------------------------------------------------------------------------------add this to db if user added photo
                 else {
                     ItemsCollection collection = new ItemsCollection(
                             String.valueOf(itemName.getText()),
@@ -126,20 +130,19 @@ public class NewCollection extends AppCompatActivity {
                     db.addCollection(collection);
 
                     Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
-
+                    //--------------------------------------------------------------------------- start new collections activity with changes
                     Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
-
                     startActivity(home);
                     finish();
                 }
             }
         });
-
+        //------------------------------------------------------------------------------------------------------- call methods for categories
         addCat();
         deleteCat();
 
     }
-
+    //-------------------------------------------------------------------------------------------------------------- method for taking photo
     public void launchCamera(View view) throws IOException {
         Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Calendar cal = Calendar.getInstance();
@@ -149,7 +152,7 @@ public class NewCollection extends AppCompatActivity {
         camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
         startActivityForResult(camera, REQUEST_TAKE_PHOTO);
     }
-
+    //---------------------------------------------------------------------------------------------------- what to do wit image capture result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
@@ -159,6 +162,7 @@ public class NewCollection extends AppCompatActivity {
             addImage.setImageBitmap(photo);
         }
     }
+    //------------------------------------------------------------------------------------------------------------- method for adding categories
     public void addCat() {
         addCategoyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +178,7 @@ public class NewCollection extends AppCompatActivity {
 
         });
     }
+    //------------------------------------------------------------------------------------------------------------- convert imageView to byte[]
     private byte[] imageViewToByte(ImageView image) {
         Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -181,7 +186,7 @@ public class NewCollection extends AppCompatActivity {
         byte[] byteArray = stream.toByteArray();
         return byteArray;
     }
-
+    //------------------------------------------------------------------------------------------------------ method for deleting inserted category
     private void deleteCat() {
         categoriesListview.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {

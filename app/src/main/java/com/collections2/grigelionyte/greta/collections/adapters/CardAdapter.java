@@ -21,7 +21,7 @@ import java.util.List;
 
 
 public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder> implements Filterable{
-
+    //------------------------------------------------------------------------------------------------------------------------------ variables
     public List <ItemsCollection> cardData;
     ArrayList<ItemsCollection> filterList;
     private LayoutInflater inflater;
@@ -30,7 +30,7 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder> i
     MyCustomFilter filter;
     MyDBHandler db;
 
-
+    //------------------------------------------------------------------------------------------------------------------- interface for clicks
     public interface ItemClickCallback {
         void onItemClick(int p);
         void onSecondaryIconClick(int p);
@@ -41,7 +41,7 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder> i
     public void setItemClickCallback(final ItemClickCallback itemClickCallback) {
         this.itemClickCallback = itemClickCallback;
     }
-
+    //---------------------------------------------------------------------------------------------------------------------------- constructor
     public CardAdapter(List <ItemsCollection> cardData, Context c){
         inflater = LayoutInflater.from(c);
         this.context = c;
@@ -49,13 +49,13 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder> i
         this.filterList = (ArrayList<ItemsCollection>) cardData;
         this.db = new MyDBHandler(c);
     }
-    // initialize cardview holder
+    //-------------------------------------------------------------------------------------------------------------- initialize cardView holder
     @Override
     public CardAdapter.CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.card_item, parent, false);
         return new CardHolder(view);
     }
-    //bind view to data
+    //----------------------------------------------------------------------------------------------------------------------- bind data - view
     @Override
     public void onBindViewHolder(CardHolder holder, int position) {
 
@@ -75,18 +75,18 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder> i
         }
     }
 
-
+    //--------------------------------------------------------------------------------------------------------------- method for size of data list
     @Override
     public int getItemCount() {
         return cardData.size();
     }
 
-
+    //------------------------------------------------------------------------------------------------------------------- removing collection item
     public void remove(int position) {
         cardData.remove(position);
         notifyItemRemoved(position);
     }
-
+    //-------------------------------------------------------------------------------------------------------------------------- filter for search
     @Override
     public Filter getFilter(){
         if (filter == null){
@@ -94,7 +94,7 @@ public class CardAdapter extends RecyclerView.Adapter <CardAdapter.CardHolder> i
         }
         return filter;
     }
-
+    //------------------------------------------------------------------------------------------------- handling clicks and positions of card items
     class CardHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView image;
         TextView title;
