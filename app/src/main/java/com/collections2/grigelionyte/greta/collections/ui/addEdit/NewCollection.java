@@ -80,6 +80,7 @@ public class NewCollection extends AppCompatActivity {
             public void onClick(View view) {
                 Intent cancel = new Intent(NewCollection.this, CollectionsActivity.class);
                 startActivity(cancel);
+                finish();
             }
         });
         itemDesc = (EditText)findViewById(R.id.colDesc);
@@ -87,53 +88,55 @@ public class NewCollection extends AppCompatActivity {
         save = (Button) findViewById(R.id.save);
 
         save.setOnClickListener(new View.OnClickListener() {
-         @Override
-              public void onClick(View v) {
-                 catList = categoriesList.toString();
-                    if (categoriesList.toString() == "[]") {
-                        catList = null;
-                    }
-                    else{
-                        catList = categoriesList.toString();
-                    }
-                   if (itemName.getText().toString().isEmpty()) {
-                       Toast.makeText(getApplicationContext(), "Collection not created. You must enter the name.", Toast.LENGTH_SHORT).show();
-                   } else if (itemDesc.getText().toString().isEmpty()) {
-                       Toast.makeText(getApplicationContext(), "Collection not created. You must enter the description.", Toast.LENGTH_SHORT).show();
-                   }
-                   else if (Arrays.equals(imageViewToByte(addImage), standartCheck)){
-                       ItemsCollection collection = new ItemsCollection(
-                               String.valueOf(itemName.getText()),
-                               String.valueOf(itemDesc.getText()),
-                               setNoPhoto,
-                               catList, 0);
-                       db.addCollection(collection);
-
-                       Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
-
-                       Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
-
-                       startActivity(home);
-                   }
-                   else {
-                       ItemsCollection collection = new ItemsCollection(
-                               String.valueOf(itemName.getText()),
-                               String.valueOf(itemDesc.getText()),
-                               imageViewToByte(addImage),
-                               catList, 0);
-                       db.addCollection(collection);
-
-                       Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
-
-                       Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
-
-                       startActivity(home);
-                    }
+            @Override
+            public void onClick(View v) {
+                catList = categoriesList.toString();
+                if (categoriesList.toString() == "[]") {
+                    catList = null;
                 }
-                });
+                else{
+                    catList = categoriesList.toString();
+                }
+                if (itemName.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Collection not created. You must enter the name.", Toast.LENGTH_SHORT).show();
+                } else if (itemDesc.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Collection not created. You must enter the description.", Toast.LENGTH_SHORT).show();
+                }
+                else if (Arrays.equals(imageViewToByte(addImage), standartCheck)){
+                    ItemsCollection collection = new ItemsCollection(
+                            String.valueOf(itemName.getText()),
+                            String.valueOf(itemDesc.getText()),
+                            setNoPhoto,
+                            catList, 0);
+                    db.addCollection(collection);
 
-                addCat();
-                deleteCat();
+                    Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
+
+                    Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
+
+                    startActivity(home);
+                    finish();
+                }
+                else {
+                    ItemsCollection collection = new ItemsCollection(
+                            String.valueOf(itemName.getText()),
+                            String.valueOf(itemDesc.getText()),
+                            imageViewToByte(addImage),
+                            catList, 0);
+                    db.addCollection(collection);
+
+                    Toast.makeText(getApplicationContext(), "new collection created", Toast.LENGTH_SHORT).show();
+
+                    Intent home = new Intent(NewCollection.this, CollectionsActivity.class);
+
+                    startActivity(home);
+                    finish();
+                }
+            }
+        });
+
+        addCat();
+        deleteCat();
 
     }
 
@@ -156,21 +159,21 @@ public class NewCollection extends AppCompatActivity {
             addImage.setImageBitmap(photo);
         }
     }
-            public void addCat() {
-                addCategoyBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(!addCategoryField.getText().equals("")) {
-                            result = addCategoryField.getText().toString();
-                        }
-                        categoriesList.add(result);
-                        categoriesadapter.notifyDataSetChanged();
-                        addCategoryField.setText("");
+    public void addCat() {
+        addCategoyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!addCategoryField.getText().equals("")) {
+                    result = addCategoryField.getText().toString();
+                }
+                categoriesList.add(result);
+                categoriesadapter.notifyDataSetChanged();
+                addCategoryField.setText("");
 
-                    }
-
-                });
             }
+
+        });
+    }
     private byte[] imageViewToByte(ImageView image) {
         Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -181,16 +184,16 @@ public class NewCollection extends AppCompatActivity {
 
     private void deleteCat() {
         categoriesListview.setOnItemLongClickListener(
-                        new AdapterView.OnItemLongClickListener() {
-                            @Override
-                            public boolean onItemLongClick(AdapterView<?> n_adapter, View item, int pos, long id) {
-                                categoriesList.remove(pos);
-                                categoriesadapter.notifyDataSetChanged();
-                                return true;
-                            }
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> n_adapter, View item, int pos, long id) {
+                        categoriesList.remove(pos);
+                        categoriesadapter.notifyDataSetChanged();
+                        return true;
+                    }
 
-                        });
-            }
+                });
+    }
 
 
-        }
+}

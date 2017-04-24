@@ -33,15 +33,18 @@ import com.collections2.grigelionyte.greta.collections.ui.addEdit.NewItem;
 import java.util.ArrayList;
 
 public class CollectionsActivity extends AppCompatActivity implements CardAdapter.ItemClickCallback, SearchView.OnQueryTextListener {
-
+    //---------------------------------------------------------------------------------- toolBar
     private Toolbar toolbar;
+    MenuItem count;
+    //------------------------------------------------------------ recycler anr recycler adapter
     private RecyclerView recView;
     private CardAdapter adapter;
+    ItemsCollection itemToDelete;
+    //----------------------------------------------------------------- data from db to recycler
     private ArrayList<ItemsCollection>cardData;
     MyDBHandler db;
     int colCount;
-    MenuItem count;
-    ItemsCollection itemToDelete;
+    //------------------------------------------------------------ GridLayoutManager column count
     GridLayoutManager grid1;
     GridLayoutManager grid2;
     int num = 0;
@@ -53,49 +56,38 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
-
         db = new MyDBHandler(getApplicationContext());
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
-        initCollapsingToolbar();
-
-
-        // SETTING CARD VIEW ----------------------------------------------------------------------------------------------------------------------
-        cardData = (ArrayList) db.getAllCollections();
+        //-------------------------------------------------------- GridLayoutManager column count
         grid1 = new GridLayoutManager(this, 1);
         grid2 = new GridLayoutManager(this, 2);
-
+        //-------------------------------------------------------------toolbar, collapsingToolbar
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        initCollapsingToolbar();
+        //------------------------------------------------------------------get list data from db
+        cardData = (ArrayList) db.getAllCollections();
+        colCount = db.getCollectionsCount();
+        //--------------------------------------------------------------------setting rec adapter
         recView = (RecyclerView)findViewById(R.id.rec_list);
         recView.setItemAnimator(new DefaultItemAnimator());
         recView.setLayoutManager(grid2);
-
-
-       adapter = new CardAdapter(cardData, this);
-
+        adapter = new CardAdapter(cardData, this);
         recView.setAdapter(adapter);
         adapter.setItemClickCallback(this);
-
-        colCount = db.getCollectionsCount();
-
-
-        // FLOATING ACTION BUTTON START-------------------------------------------------------------------------------------------------------------
-
-
+        //------------------------------------------------------------- main floatingActionButton
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-
+        //--------------------------------------------------------- add item floatingActionButton
         FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.floatingActionButtonItem);
+        //--------------------------------------------------- add collection floatingActionButton
         FloatingActionButton addCol = (FloatingActionButton) findViewById(R.id.floatingActionButtonCol);
+        //--------------------------------------------------- animations for floatingActionButton
         final LinearLayout itemLayout = (LinearLayout) findViewById(R.id.addNew);
         final LinearLayout colLayout = (LinearLayout) findViewById(R.id.collection);
         final Animation mShowButton = AnimationUtils.loadAnimation(CollectionsActivity.this, R.anim.show_button);
         final Animation mHideButton = AnimationUtils.loadAnimation(CollectionsActivity.this, R.anim.hide_button);
         final Animation mShowLayout = AnimationUtils.loadAnimation(CollectionsActivity.this, R.anim.show_layout);
         final Animation mHideLayout = AnimationUtils.loadAnimation(CollectionsActivity.this, R.anim.hide_layout);
-
-        // floating button main action-------------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------- main floatingActionButton actions
         add.setOnClickListener(new View.OnClickListener() {
             View bc = findViewById(R.id.floating_bc);
             @Override
@@ -107,7 +99,6 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
                     colLayout.startAnimation(mHideLayout);
                     itemLayout.startAnimation(mHideLayout);
                     add.startAnimation(mHideButton);
-
                     bc.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 }
                 else {
@@ -117,22 +108,16 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
                     itemLayout.startAnimation(mShowLayout);
                     add.startAnimation(mShowButton);
                     bc.setBackgroundColor(getResources().getColor(R.color.trans));
-
                 }
-
-
-
             }
-
         });
-        // floating button add item action-----------------------------------------------------------------------------------------------------------
+        //------------------------------------------------ add item floatingActionButton actions
         if (colCount < 1) {
             addItem.setEnabled(false);
         }
         else {
             addItem.setOnClickListener(new View.OnClickListener() {
                 FloatingActionButton add = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-
                 @Override
                 public void onClick(View view) {
                     itemLayout.setVisibility(View.GONE);
@@ -145,11 +130,10 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
                 }
             });
         }
-        // floating button add collection action---------------------------------------------------------------------------------------------------------
+        //------------------------------------------- add collection floatingActionButton actions
         addCol.setOnClickListener(new View.OnClickListener() {
             FloatingActionButton add = (FloatingActionButton) findViewById(R.id.floatingActionButton);
             @Override
-
             public void onClick(View view) {
                 itemLayout.setVisibility(View.GONE);
                 colLayout.setVisibility(View.GONE);
@@ -160,15 +144,11 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
                 startActivity(addColActive);
             }
         });
-        // FLOATING ACTION BUTTON END---------------------------------------------------------------------------------------------------------------------
-
-    }   // ON CREATE END ----------------------------------------------------------------------------------------------------------------------------------
-
-        // MENU ------------------------------------------------------------------------------------------------------------------------------------------
+    }
+    //-------------------------------------------------------------------- end of onCreate method
+    //---------------------------------------------------------------------------- inflating menu
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-
             getMenuInflater().inflate(R.menu.menu_main, menu);
             count = menu.findItem(R.id.action_change_view);
             MenuItemCompat.getActionView(count);
@@ -180,15 +160,10 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
             searchView.setOnQueryTextListener(this);
             return true;
         }
-
+    //--------------------------------------------------------------- what to do if item selected
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
             int id = item.getItemId();
-
-            //noinspection SimplifiableIfStatement
             if (id == R.id.action_search) {
 
                 return true;
@@ -206,16 +181,15 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
                 }
                 return true;
             }
-
             return super.onOptionsItemSelected(item);
         }
-
+    //-------------------------------------------------------------------- starting list activity
     @Override
     public void onItemClick(int p) {
         Intent intent = makeIntent(CollectionsActivity.this, adapter.cardData.get(p).getColTitle(), adapter.cardData.get(p).getSubTitle());
         startActivity(intent);
     }
-
+    //------------------------------------------------------------------------- setting favorites
     @Override
     public void onSecondaryIconClick(int p) {
         ItemsCollection item = (ItemsCollection) cardData.get(p);
@@ -223,15 +197,13 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         if (item.getFavoriteCol() == 1) {
             item.setFavoriteCol(0);
             db.setNotFavoriteCol(item);
-
         } else  {
             item.setFavoriteCol(1);
            db.setFavoriteCol(item);
-
         }
         adapter.notifyDataSetChanged();
     }
-
+    //------------------------------------------------------------------------------- delete item
     @Override
     public void onDeleteClick(final int p) {
         itemToDelete = (ItemsCollection)cardData.get(p);
@@ -243,7 +215,6 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
                     public void onClick(DialogInterface dialogInterface, int i) {
                         db.deleteCollection(itemToDelete);
                         adapter.remove(p);
-                       // adapter.notifyItemRemoved(p);
                     }
                 })
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -255,15 +226,13 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         deleteAlert.create();
         deleteAlert.show();
     }
-
+    //--------------------------------------------------------------- handling collapsing toolbar
     private void initCollapsingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar =
         (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.setExpanded(false);
-
-
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -275,11 +244,9 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbar.setTitle(getString(R.string.app_name));
-
                     isShow = true;
                 } else if (isShow) {
                     collapsingToolbar.setTitle(" ");
-
                     isShow = false;
                 }
             }
@@ -292,6 +259,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         View bc = findViewById(R.id.floating_bc);
         bc.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
+    //--------------------------------------------------------- method for starting list activity
     public static Intent makeIntent(Context context, String nameofcol, String desc) {
         Intent intent = new Intent(context, ListActivity.class);
         intent.putExtra("name_of_collection", nameofcol);
@@ -299,7 +267,7 @@ public class CollectionsActivity extends AppCompatActivity implements CardAdapte
         return intent;
     }
 
-
+    //-------------------------------------------------------------------------- search filtering
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;

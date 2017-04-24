@@ -206,7 +206,21 @@ public class MyDBHandler extends SQLiteOpenHelper{
         return  db.query(TABLE_ITEMS, columns, null, null, null, null, null);
     }
 
-    public int getCollectionIdByName(String name) {
+    public String getCollectionDescByName(String name) {
+        SQLiteDatabase db = getWritableDatabase();
+        String desc = "";
+        String[] columns = {COLUMN_DESCRIPTION, COLUMN_NAME};
+
+        Cursor cursor = db.query(TABLE_COLLECTIONS, columns, COLUMN_NAME + " = '" + name + "'", null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(COLUMN_DESCRIPTION);
+
+            desc = cursor.getString(index);
+        }
+        return desc;
+    }
+   /* public int getCollectionIdByName(String name) {
         SQLiteDatabase db = getWritableDatabase();
         int id = 0;
         String[] columns = {COLUMN_ITEM_COLLECTION_ID, COLUMN_NAME};
@@ -219,7 +233,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
             id = cursor.getInt(index);
         }
         return id;
-    }
+    }*/
 
     public int getId(String name) {
         SQLiteDatabase db = getWritableDatabase();

@@ -1,5 +1,6 @@
 package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -25,7 +26,7 @@ import android.widget.Toast;
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.model.Item;
 import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
-import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivity;
+import com.collections2.grigelionyte.greta.collections.ui.main.ListActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -146,8 +147,9 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cancel = new Intent(UpdateItem.this, CollectionsActivity.class);
-                startActivity(cancel);
+                Intent intent = makeIntent(UpdateItem.this, collName);
+                startActivity(intent);
+                finish();
             }
         });
 //add img to byte
@@ -192,8 +194,10 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                     db.updateItem(item);
                     Toast.makeText(getApplicationContext(), "item updated" + item.getId(), Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "item updated", Toast.LENGTH_SHORT).show();
-                    Intent home = new Intent(UpdateItem.this, CollectionsActivity.class);
-                    startActivity(home);
+                    spAdapter.notifyDataSetChanged();
+                    Intent intent = makeIntent(UpdateItem.this, collName);
+                    startActivity(intent);
+                    finish();
                 }
 
                 else {
@@ -204,8 +208,10 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
                     db.updateItem(item);
                     Toast.makeText(getApplicationContext(), "item updated" + item.getId(), Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "item updated", Toast.LENGTH_SHORT).show();
-                    Intent home = new Intent(UpdateItem.this, CollectionsActivity.class);
-                    startActivity(home);
+                    spAdapter.notifyDataSetChanged();
+                    Intent intent = makeIntent(UpdateItem.this, collName);
+                    startActivity(intent);
+                    finish();
 
 
 
@@ -268,6 +274,12 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
         categoriesList[length - 1] = str2;
         return categoriesList;
     }
+    @Override
+    public void onBackPressed(){
+        Intent intent = makeIntent(UpdateItem.this, collName);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -277,5 +289,10 @@ public class UpdateItem extends AppCompatActivity implements AdapterView.OnItemS
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+    public static Intent makeIntent(Context context, String nameofcol) {
+        Intent intent = new Intent(context, ListActivity.class);
+        intent.putExtra("name_of_collection", nameofcol);
+        return intent;
     }
 }

@@ -69,7 +69,7 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
             holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_black_18dp);
         }
         else if (listData.get(position).getFavorite() == 0){
-        holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_border_black_18dp);
+            holder.secondaryIcon.setImageResource(R.drawable.ic_favorite_border_black_18dp);
         }
     }
     public void remove(int position) {
@@ -118,9 +118,9 @@ public class ListItemAdapter extends RecyclerView.Adapter <ListItemAdapter.ListH
                 itemClickCallback.onItemClick(getAdapterPosition());
             }
             else if (v.getId() == R.id.im_item_icon_edit){
-                    itemClickCallback.onEditClick(getAdapterPosition());
-                }
-             else if (v.getId() == R.id.im_item_icon_secondary){
+                itemClickCallback.onEditClick(getAdapterPosition());
+            }
+            else if (v.getId() == R.id.im_item_icon_secondary){
                 itemClickCallback.onSecondaryIconClick(getAdapterPosition());
             }
         }

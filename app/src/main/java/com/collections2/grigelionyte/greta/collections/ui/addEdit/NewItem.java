@@ -1,5 +1,6 @@
 package com.collections2.grigelionyte.greta.collections.ui.addEdit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -25,7 +26,7 @@ import android.widget.Toast;
 import com.collections2.grigelionyte.greta.collections.R;
 import com.collections2.grigelionyte.greta.collections.model.Item;
 import com.collections2.grigelionyte.greta.collections.model.MyDBHandler;
-import com.collections2.grigelionyte.greta.collections.ui.main.CollectionsActivity;
+import com.collections2.grigelionyte.greta.collections.ui.main.ListActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -87,8 +88,9 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cancel = new Intent(NewItem.this, CollectionsActivity.class);
-                startActivity(cancel);
+                Intent intent = makeIntent(NewItem.this, spinner.getSelectedItem().toString());
+                startActivity(intent);
+                finish();
             }
         });
         spinner.setOnItemSelectedListener(this);
@@ -140,9 +142,9 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
                     db.addItem(item);
 
                     Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
-
-                    Intent home = new Intent(NewItem.this, CollectionsActivity.class);
-                    startActivity(home);
+                    Intent intent = makeIntent(NewItem.this, text);
+                    startActivity(intent);
+                    finish();
                 }
                 else {
                     Item item = new Item(
@@ -157,8 +159,9 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
 
                     Toast.makeText(getApplicationContext(), "new item created", Toast.LENGTH_SHORT).show();
 
-                    Intent home = new Intent(NewItem.this, CollectionsActivity.class);
-                    startActivity(home);
+                    Intent intent = makeIntent(NewItem.this, text);
+                    startActivity(intent);
+                    finish();
                 }
 
             }
@@ -257,6 +260,18 @@ public class NewItem extends AppCompatActivity implements AdapterView.OnItemSele
         categoriesList[length - 1] = str2;
         return categoriesList;
     }
+    @Override
+    public void onBackPressed(){
+        Intent intent = makeIntent(NewItem.this, spinner.getSelectedItem().toString());
+        startActivity(intent);
+        finish();
+    }
+    public static Intent makeIntent(Context context, String nameofcol) {
+        Intent intent = new Intent(context, ListActivity.class);
+        intent.putExtra("name_of_collection", nameofcol);
+        return intent;
+    }
+
 }
 
 

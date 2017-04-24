@@ -1,5 +1,7 @@
 package com.collections2.grigelionyte.greta.collections.ui.main;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -25,6 +27,8 @@ public class DetailActivity extends AppCompatActivity {
     private static final String EXTRA_ARR = "EXTRA_ARR";
     private static final String EXTRA_CAT1 = "EXTRA_CAT1";
     private static final String EXTRA_CAT2 = "EXTRA_CAT2";
+    private static final String EXTRA_ID = "EXTRA_ID";
+    private static final String EXTRA_ID_DESC = "EXTRA_ID_DESC";
 
 
     ArrayAdapter<String> categoriesadapter;
@@ -35,7 +39,7 @@ public class DetailActivity extends AppCompatActivity {
     String catNames;
     String catDetails;
     LinearLayout linearLayout;
-    String name;
+    String name, collectionName, collectionDescription;
 
 
     @Override
@@ -50,7 +54,8 @@ public class DetailActivity extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.list);
         linearLayout.setPadding(0,20,0,0);
         Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
-
+        collectionName = extras.getString(EXTRA_ID);
+        collectionDescription = extras.getString(EXTRA_ID_DESC);
         name = extras.getString(EXTRA_QUOTE);
         byte[] img = extras.getByteArray(EXTRA_ARR);
         Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
@@ -131,5 +136,17 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    @Override
+    public void onBackPressed(){
+        Intent intent = makeIntent(DetailActivity.this, collectionName, collectionDescription);
+        startActivity(intent);
+        finish();
+    }
+    public static Intent makeIntent(Context context, String nameofcol, String desc) {
+        Intent intent = new Intent(context, ListActivity.class);
+        intent.putExtra("name_of_collection", nameofcol);
+        intent.putExtra("description_of_collection", desc);
+        return intent;
     }
 }
